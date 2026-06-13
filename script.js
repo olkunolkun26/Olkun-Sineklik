@@ -295,12 +295,13 @@ function whatsappGonder() {
     return;
   }
 
+  const tarih = document.getElementById("tarih").value || "-";
   const musteri = document.getElementById("musteri").value || "-";
   const telefon = document.getElementById("telefon").value || "-";
   const adres = document.getElementById("adres").value || "-";
-  const tarih = document.getElementById("tarih").value || "";
 
   const lines = [];
+
   lines.push("📋 OLKUN SİNEKLİK TEKLİFİ");
   lines.push("📅 " + tarih);
   lines.push("");
@@ -308,25 +309,33 @@ function whatsappGonder() {
   lines.push("📞 " + telefon);
   lines.push("📍 " + adres);
   lines.push("");
-  lines.push("━━━━━━━━━━━━━━━━━━");
+  lines.push("━━━━━━━━━━━━━━━━━━━━");
   lines.push("");
-  lines.push("No | Ölçü | Ürün | Adet");
-  lines.push("──────────────────");
+  lines.push("NO | ÖLÇÜ | ÜRÜN | ADET");
+  lines.push("────────────────────");
 
-  sonKalemler.forEach((k, i) => {
-    let urun = k.tip === "Duble" ? ("Duble " + k.renk) : k.renk;
-    lines.push((i+1) + " | " + k.en + "x" + k.boy + " | " + urun + " | " + k.adet);
+  sonKalemler.forEach((k) => {
+    let urun = k.renk;
+    if (k.tip === "Duble") {
+      urun = "Duble " + k.renk;
+    }
+
+    lines.push(
+      k.no + " | " +
+      k.en + "x" + k.boy + " | " +
+      urun + " | " +
+      k.adet
+    );
   });
 
   lines.push("");
-  lines.push("━━━━━━━━━━━━━━━━━━");
+  lines.push("━━━━━━━━━━━━━━━━━━━━");
   lines.push("");
   lines.push("📦 Toplam Adet: " + sonAdet);
   lines.push("");
   lines.push("OLKUN SİNEKLİK");
 
-  const mesaj = lines.join("
-");
+  const mesaj = lines.join("\n");
   window.open("https://wa.me/?text=" + encodeURIComponent(mesaj), "_blank");
 }
 

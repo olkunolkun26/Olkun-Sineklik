@@ -1,3 +1,3 @@
-# OLKUN SİNEKLİK Premium Teklif Sistemi
+# OLKUN SİNEKLİK
 
-WhatsApp mesajı profesyonel şablona çevrildi. Satır sonları join ile güvenli oluşturulur.
+WhatsApp mesajı tablolu profesyonel formata düzeltildi. Diğer sistemlere dokunulmadı.
