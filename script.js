@@ -5,7 +5,68 @@ function tl(n){return Math.round(n).toLocaleString("tr-TR")+" TL"}
 function sayi(v){return parseFloat(String(v||"").replace(",","."))||0}
 function satirEkle(data){satirNo++;const div=document.createElement("div");div.className="line";const renk=data?.renk||"beyaz";div.innerHTML=`<input class="en" type="number" placeholder="En" value="${data?.en||""}"><input class="boy" type="number" placeholder="Boy" value="${data?.boy||""}"><input class="renk" name="renk_${satirNo}" type="radio" value="renkli" ${renk==="renkli"?"checked":""}><input class="renk" name="renk_${satirNo}" type="radio" value="beyaz" ${renk!=="renkli"?"checked":""}><input class="adet" type="number" value="${data?.adet||1}" min="1"><input class="duble" type="checkbox" ${data?.duble?"checked":""}><div class="price">0 TL</div>`;document.getElementById("rows").appendChild(div);div.querySelectorAll("input").forEach(el=>{el.addEventListener("input",hesapla);el.addEventListener("change",hesapla)})}
 function getRowsData(){return Array.from(document.querySelectorAll(".line")).map(row=>({en:row.querySelector(".en").value,boy:row.querySelector(".boy").value,adet:row.querySelector(".adet").value,renk:row.querySelector(".renk:checked").value,duble:row.querySelector(".duble").checked})).filter(r=>sayi(r.en)>0&&sayi(r.boy)>0)}
-function hesapla(){const rows=document.querySelectorAll(".line");let toplam=0,adetToplam=0;const kalemler=[];const mod=document.getElementById("mod").value;const fiyatGizli=document.getElementById("fiyatGorunum").value==="gizli";rows.forEach(row=>{const en=sayi(row.querySelector(".en").value);const boy=sayi(row.querySelector(".boy").value);let adet=sayi(row.querySelector(".adet").value);if(adet<=0)adet=1;const renk=row.querySelector(".renk:checked").value;const duble=row.querySelector(".duble").checked;let fiyat=0;if(en>0&&boy>0){const cevre=((en+boy)*2)/100;let bayi=192+(cevre*211);if(renk==="renkli")bayi*=1.15;if(duble)bayi*=1.40;fiyat=mod==="son"?bayi*1.90:bayi;fiyat=Math.round(fiyat*adet);toplam+=fiyat;adetToplam+=adet;kalemler.push({no:kalemler.length+1,en,boy,adet,renk:renk==="renkli"?"Renkli":"Beyaz",tip:duble?"Duble":"Standart",fiyat})}row.querySelector(".price").innerText=fiyatGizli?"-":tl(fiyat)});sonKalemler=kalemler;sonToplam=Math.round(toplam);sonAdet=adetToplam;sonOnOdeme=Math.round(sayi(document.getElementById("onOdeme").value));sonKalan=Math.max(sonToplam-sonOnOdeme,0);document.getElementById("toplamAdet").innerText=sonAdet;document.getElementById("toplamFiyat").innerText=tl(sonToplam);document.getElementById("onOdemeGoster").innerText=tl(sonOnOdeme);document.getElementById("kalanGoster").innerText=tl(sonKalan)}
+
+function fiyatCarpani(renk,duble){
+  let carpan=1;
+  if(renk==="renkli") carpan*=1.15;
+  if(duble) carpan*=1.40;
+  return carpan;
+}
+
+const sonKullaniciReferanslari = [
+  // en, boy, renk, duble, gerçek son kullanıcı satış fiyatı
+  {en:60,boy:120,renk:"beyaz",duble:false,fiyat:1500},
+  {en:60,boy:120,renk:"renkli",duble:false,fiyat:1750},
+  {en:76,boy:180,renk:"renkli",duble:false,fiyat:2000},
+  {en:80,boy:195,renk:"beyaz",duble:false,fiyat:2500},
+  {en:80,boy:195,renk:"renkli",duble:false,fiyat:3000},
+  {en:100,boy:200,renk:"beyaz",duble:false,fiyat:3000},
+  {en:100,boy:200,renk:"renkli",duble:false,fiyat:3500},
+  {en:150,boy:200,renk:"beyaz",duble:false,fiyat:4000},
+  {en:200,boy:200,renk:"renkli",duble:false,fiyat:5000},
+  {en:300,boy:200,renk:"beyaz",duble:true,fiyat:7500},
+  {en:500,boy:106,renk:"renkli",duble:true,fiyat:12000},
+  {en:500,boy:110,renk:"renkli",duble:true,fiyat:12000}
+];
+
+function sonKullaniciFiyati(en,boy,renk,duble){
+  // Aynı ölçü ve aynı ürün kombinasyonu girilirse birebir gerçek satış fiyatı döner.
+  for(const r of sonKullaniciReferanslari){
+    if(Math.abs(en-r.en)<=1 && Math.abs(boy-r.boy)<=1 && renk===r.renk && duble===r.duble){
+      return r.fiyat;
+    }
+  }
+
+  const alan=(en*boy)/10000;
+  const cevre=((en+boy)*2)/100;
+  const istenenCarpan=fiyatCarpani(renk,duble);
+
+  let agirlikToplam=0;
+  let fiyatToplam=0;
+
+  sonKullaniciReferanslari.forEach(r=>{
+    const rAlan=(r.en*r.boy)/10000;
+    const rCevre=((r.en+r.boy)*2)/100;
+    const rCarpan=fiyatCarpani(r.renk,r.duble);
+    const bazFiyat=r.fiyat/rCarpan;
+
+    const alanFark=(alan-rAlan)/2.5;
+    const cevreFark=(cevre-rCevre)/7;
+    const mesafe=Math.sqrt(alanFark*alanFark + cevreFark*cevreFark);
+    const agirlik=1/Math.pow(mesafe+0.18,2);
+
+    agirlikToplam+=agirlik;
+    fiyatToplam+=bazFiyat*agirlik;
+  });
+
+  let baz=fiyatToplam/agirlikToplam;
+  let sonuc=baz*istenenCarpan;
+
+  // Sahada yuvarlak fiyat vermek için 50 TL'ye yuvarlanır.
+  return Math.round(sonuc/50)*50;
+}
+
+function hesapla(){const rows=document.querySelectorAll(".line");let toplam=0,adetToplam=0;const kalemler=[];const mod=document.getElementById("mod").value;const fiyatGizli=document.getElementById("fiyatGorunum").value==="gizli";rows.forEach(row=>{const en=sayi(row.querySelector(".en").value);const boy=sayi(row.querySelector(".boy").value);let adet=sayi(row.querySelector(".adet").value);if(adet<=0)adet=1;const renk=row.querySelector(".renk:checked").value;const duble=row.querySelector(".duble").checked;let fiyat=0;if(en>0&&boy>0){const cevre=((en+boy)*2)/100;let bayi=192+(cevre*211);if(renk==="renkli")bayi*=1.15;if(duble)bayi*=1.40;fiyat=mod==="son"?sonKullaniciFiyati(en,boy,renk,duble):bayi;fiyat=Math.round(fiyat*adet);toplam+=fiyat;adetToplam+=adet;kalemler.push({no:kalemler.length+1,en,boy,adet,renk:renk==="renkli"?"Renkli":"Beyaz",tip:duble?"Duble":"Standart",fiyat})}row.querySelector(".price").innerText=fiyatGizli?"-":tl(fiyat)});sonKalemler=kalemler;sonToplam=Math.round(toplam);sonAdet=adetToplam;sonOnOdeme=Math.round(sayi(document.getElementById("onOdeme").value));sonKalan=Math.max(sonToplam-sonOnOdeme,0);document.getElementById("toplamAdet").innerText=sonAdet;document.getElementById("toplamFiyat").innerText=tl(sonToplam);document.getElementById("onOdemeGoster").innerText=tl(sonOnOdeme);document.getElementById("kalanGoster").innerText=tl(sonKalan)}
 function sifirla(){document.getElementById("rows").innerHTML="";document.getElementById("musteri").value="";document.getElementById("telefon").value="";document.getElementById("adres").value="";document.getElementById("onOdeme").value="";sonKalemler=[];sonToplam=0;sonAdet=0;sonOnOdeme=0;sonKalan=0;for(let i=0;i<10;i++)satirEkle();hesapla()}
 function yeniTeklif(){document.getElementById("welcomeScreen").classList.add("hidden");document.getElementById("quoteScreen").classList.remove("hidden");sifirla()}
 function anaEkran(){document.getElementById("quoteScreen").classList.add("hidden");document.getElementById("welcomeScreen").classList.remove("hidden");document.getElementById("savedPanel").classList.add("hidden")}
