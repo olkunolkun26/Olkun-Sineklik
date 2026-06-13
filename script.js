@@ -302,17 +302,14 @@ function whatsappGonder() {
 
   const lines = [];
 
-  lines.push("📋 OLKUN SİNEKLİK TEKLİFİ");
+  lines.push("📋 *OLKUN SİNEKLİK TEKLİFİ*");
   lines.push("📅 " + tarih);
   lines.push("");
-  lines.push("👤 " + musteri);
-  lines.push("📞 " + telefon);
-  lines.push("📍 " + adres);
+  lines.push("👤 *Müşteri:* " + musteri);
+  lines.push("📞 *Telefon:* " + telefon);
+  lines.push("📍 *Adres:* " + adres);
   lines.push("");
   lines.push("━━━━━━━━━━━━━━━━━━━━");
-  lines.push("");
-  lines.push("NO | ÖLÇÜ | ÜRÜN | ADET");
-  lines.push("────────────────────");
 
   sonKalemler.forEach((k) => {
     let urun = k.renk;
@@ -320,20 +317,18 @@ function whatsappGonder() {
       urun = "Duble " + k.renk;
     }
 
-    lines.push(
-      k.no + " | " +
-      k.en + "x" + k.boy + " | " +
-      urun + " | " +
-      k.adet
-    );
+    lines.push("");
+    lines.push("*" + k.no + ". Sineklik*");
+    lines.push("Ölçü : " + k.en + " × " + k.boy + " cm");
+    lines.push("Ürün : " + urun);
+    lines.push("Adet : " + k.adet);
   });
 
   lines.push("");
   lines.push("━━━━━━━━━━━━━━━━━━━━");
+  lines.push("📦 *Toplam Adet:* " + sonAdet);
   lines.push("");
-  lines.push("📦 Toplam Adet: " + sonAdet);
-  lines.push("");
-  lines.push("OLKUN SİNEKLİK");
+  lines.push("*OLKUN SİNEKLİK*");
 
   const mesaj = lines.join("\n");
   window.open("https://wa.me/?text=" + encodeURIComponent(mesaj), "_blank");

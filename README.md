@@ -1,3 +1,3 @@
 # OLKUN SİNEKLİK
 
-WhatsApp mesajı tablolu profesyonel formata düzeltildi. Diğer sistemlere dokunulmadı.
+WhatsApp mesajı profesyonel kart/tabela formatına çevrildi.
