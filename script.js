@@ -298,37 +298,35 @@ function whatsappGonder() {
   const musteri = document.getElementById("musteri").value || "-";
   const telefon = document.getElementById("telefon").value || "-";
   const adres = document.getElementById("adres").value || "-";
+  const tarih = document.getElementById("tarih").value || "";
 
   const lines = [];
-  lines.push("📋 OLKUN SİNEKLİK");
+  lines.push("📋 OLKUN SİNEKLİK TEKLİFİ");
+  lines.push("📅 " + tarih);
   lines.push("");
   lines.push("👤 " + musteri);
   lines.push("📞 " + telefon);
+  lines.push("📍 " + adres);
   lines.push("");
-  lines.push("📍 Adres:");
-  lines.push(adres);
+  lines.push("━━━━━━━━━━━━━━━━━━");
   lines.push("");
-  lines.push("────────────────");
+  lines.push("No | Ölçü | Ürün | Adet");
+  lines.push("──────────────────");
 
-  sonKalemler.forEach((k) => {
-    let urun = k.renk;
-    if (k.tip === "Duble") {
-      urun = "Duble " + k.renk;
-    }
-
-    lines.push("");
-    lines.push("▪ " + k.en + " × " + k.boy + " cm");
-    lines.push(urun + " • " + k.adet + " Adet");
+  sonKalemler.forEach((k, i) => {
+    let urun = k.tip === "Duble" ? ("Duble " + k.renk) : k.renk;
+    lines.push((i+1) + " | " + k.en + "x" + k.boy + " | " + urun + " | " + k.adet);
   });
 
   lines.push("");
-  lines.push("────────────────");
+  lines.push("━━━━━━━━━━━━━━━━━━");
   lines.push("");
   lines.push("📦 Toplam Adet: " + sonAdet);
   lines.push("");
   lines.push("OLKUN SİNEKLİK");
 
-  const mesaj = lines.join("\\n");
+  const mesaj = lines.join("
+");
   window.open("https://wa.me/?text=" + encodeURIComponent(mesaj), "_blank");
 }
 
