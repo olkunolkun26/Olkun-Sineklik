@@ -1,3 +1,3 @@
 # OLKUN SİNEKLİK Premium Teklif Sistemi
 
-WhatsApp mesaj şablonu premium, sade formata güncellendi.
+Sadece WhatsApp mesaj şablonu düzeltildi; diğer ekran geçişleri korunmuştur.

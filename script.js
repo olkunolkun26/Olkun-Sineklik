@@ -55,7 +55,7 @@ function renderSavedList(){const list=getSaved();const box=document.getElementBy
 function teklifiSil(id){setSaved(getSaved().filter(q=>q.id!==id));renderSavedList()}
 function odendi(id){if(confirm("Bu teklif ödendi olarak kapatılsın mı?")){teklifiSil(id)}}
 function teklifiYukle(id){const q=getSaved().find(x=>x.id===id);if(!q)return;document.getElementById("welcomeScreen").classList.add("hidden");document.getElementById("quoteScreen").classList.remove("hidden");document.getElementById("savedPanel").classList.add("hidden");document.getElementById("tarih").value=q.date||bugun();document.getElementById("musteri").value=q.customer||"";document.getElementById("telefon").value=q.phone||"";document.getElementById("adres").value=q.address||"";document.getElementById("onOdeme").value=q.deposit||"";document.getElementById("mod").value=q.mod||"bayi";document.getElementById("fiyatGorunum").value=q.fiyatGorunum||"satir";document.getElementById("rows").innerHTML="";(q.rows||[]).forEach(r=>satirEkle(r));while(document.querySelectorAll(".line").length<10)satirEkle();hesapla()}
-function whatsappGonder(){hesapla();if(sonKalemler.length===0){alert("Ölçü giriniz");return}let mesaj="📋 OLKUN SİNEKLİK
+function whatsappGonder(){hesapla();if(sonKalemler.length===0){alert("Ölçü giriniz");return;}let mesaj="📋 OLKUN SİNEKLİK
 
 ";mesaj+="👤 "+(document.getElementById("musteri").value||"-")+"
 ";mesaj+="📞 "+(document.getElementById("telefon").value||"-")+"
@@ -65,13 +65,13 @@ function whatsappGonder(){hesapla();if(sonKalemler.length===0){alert("Ölçü gi
 
 ";mesaj+="────────────────
 
-";sonKalemler.forEach(k=>{let urun=k.renk;if(k.tip==="Duble"){urun="Duble "+k.renk}mesaj+="▪ "+k.en+" × "+k.boy+" cm
+";sonKalemler.forEach(k=>{let urun=k.renk;if(k.tip==="Duble"){urun="Duble "+k.renk;}mesaj+="▪ "+k.en+" × "+k.boy+" cm
 ";mesaj+=urun+" • "+k.adet+" Adet
 
-"});mesaj+="────────────────
+";});mesaj+="────────────────
 
 ";mesaj+="📦 Toplam Adet: "+sonAdet+"
 
-";mesaj+="OLKUN SİNEKLİK";window.open("https://wa.me/?text="+encodeURIComponent(mesaj),"_blank")}
+";mesaj+="OLKUN SİNEKLİK";window.open("https://wa.me/?text="+encodeURIComponent(mesaj),"_blank");}
 function pdfOlustur(){hesapla();if(sonKalemler.length===0){alert("Ölçü giriniz");return}document.getElementById("pTarih").innerText=document.getElementById("tarih").value;document.getElementById("pMusteri").innerText=document.getElementById("musteri").value||"-";document.getElementById("pAdres").innerText=document.getElementById("adres").value||"-";document.getElementById("pTelefon").innerText=document.getElementById("telefon").value||"-";let html="";sonKalemler.forEach(k=>{html+='<div class="print-item">'+k.no+') '+k.en+' x '+k.boy+' cm - '+k.adet+' adet - '+k.tip+' - '+k.renk+'</div>'});document.getElementById("pKalemler").innerHTML=html;document.getElementById("pToplamAdet").innerText="Toplam Adet: "+sonAdet;document.getElementById("pFiyat").innerText="Toplam Fiyat: "+tl(sonToplam);document.getElementById("pOdeme").innerText="Ön Ödeme: "+tl(sonOnOdeme)+"\\nKalan: "+tl(sonKalan);window.print()}
 document.addEventListener("DOMContentLoaded",()=>{document.getElementById("tarih").value=bugun();document.getElementById("startBtn").addEventListener("click",yeniTeklif);document.getElementById("showSavedBtn").addEventListener("click",()=>{document.getElementById("savedPanel").classList.remove("hidden");renderSavedList()});document.getElementById("closeSavedBtn").addEventListener("click",()=>document.getElementById("savedPanel").classList.add("hidden"));document.getElementById("backHomeBtn").addEventListener("click",anaEkran);document.getElementById("quoteSavedBtn").addEventListener("click",sonTekliflereGit);document.getElementById("mod").addEventListener("change",hesapla);document.getElementById("fiyatGorunum").addEventListener("change",hesapla);document.getElementById("onOdeme").addEventListener("input",hesapla);document.getElementById("hesaplaBtn").addEventListener("click",hesapla);document.getElementById("sifirlaBtn").addEventListener("click",sifirla);document.getElementById("satirEkleBtn").addEventListener("click",()=>satirEkle());document.getElementById("whatsappBtn").addEventListener("click",whatsappGonder);document.getElementById("pdfBtn").addEventListener("click",pdfOlustur);document.getElementById("saveBtn").addEventListener("click",teklifiKaydet);for(let i=0;i<10;i++)satirEkle();hesapla()})
