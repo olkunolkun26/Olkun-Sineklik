@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OLKUN SİNEKLİK | Teklif Sistemi</title>
+  <meta name="description" content="OLKUN SİNEKLİK plise sineklik teklif ve fiyat hesaplama sistemi">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <header class="header">
+      <div class="logo">OS</div>
+      <h1>OLKUN SİNEKLİK</h1>
+      <p>Plise sineklik hızlı saha teklif ekranı</p>
+    </header>
+
+    <section class="card">
+      <div class="info-grid">
+        <div>
+          <label>Teklif No</label>
+          <input id="teklifNo" readonly>
+        </div>
+        <div>
+          <label>Tarih</label>
+          <input id="tarih" readonly>
+        </div>
+        <div>
+          <label>Müşteri</label>
+          <input id="musteri" placeholder="Müşteri adı">
+        </div>
+        <div>
+          <label>Telefon</label>
+          <input id="telefon" placeholder="Telefon">
+        </div>
+        <div>
+          <label>Mod</label>
+          <select id="mod">
+            <option value="bayi">Bayi</option>
+            <option value="son">Son Kullanıcı</option>
+          </select>
+        </div>
+        <div>
+          <label>Satır Fiyatı</label>
+          <select id="fiyatGorunum">
+            <option value="satir">Açık</option>
+            <option value="gizli">Gizli</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="row-head">
+        <div>En</div>
+        <div>Boy</div>
+        <div>R</div>
+        <div>B</div>
+        <div>Adet</div>
+        <div>Duble</div>
+        <div>Fiyat</div>
+      </div>
+      <div id="rows"></div>
+    </section>
+
+    <section class="button-grid">
+      <button id="hesaplaBtn">Hesapla</button>
+      <button id="sifirlaBtn">Sıfırla</button>
+    </section>
+
+    <section class="total-row">
+      Toplam Adet: <span id="toplamAdet">0</span>
+    </section>
+
+    <section class="total-card">
+      <div class="total-label">Toplam Fiyat:</div>
+      <div id="toplamFiyat" class="total-price">0 TL</div>
+    </section>
+
+    <button id="whatsappBtn" class="whatsapp">WhatsApp Teklif Gönder</button>
+
+    <section class="button-grid">
+      <button id="pdfBtn" class="gold">PDF / Yazdır</button>
+      <button id="satirEkleBtn" class="dark">+ Satır</button>
+    </section>
+
+    <p class="note">R = Renkli +%15, B = Beyaz, Duble +%40. WhatsApp mesajında fiyat gönderilmez.</p>
+  </main>
+
+  <section id="printArea">
+    <div class="print-doc">
+      <div class="print-head">
+        <h2>OLKUN SİNEKLİK TEKLİF</h2>
+        <div>Teklif No: <span id="pTeklifNo"></span></div>
+        <div>Tarih: <span id="pTarih"></span></div>
+        <div>Müşteri: <span id="pMusteri"></span></div>
+        <div>Telefon: <span id="pTelefon"></span></div>
+      </div>
+      <h3>Ölçüler</h3>
+      <div id="pKalemler"></div>
+      <div id="pToplamAdet"></div>
+      <div id="pFiyat" class="print-total"></div>
+      <br>
+      <strong>OLKUN SİNEKLİK</strong>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
