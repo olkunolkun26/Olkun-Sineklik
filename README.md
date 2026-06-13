@@ -1,3 +1,3 @@
 # OLKUN SİNEKLİK Premium Teklif Sistemi
 
-Temiz çalışan sürüm. Yeni Teklif, Son Teklifler ve WhatsApp şablonu test edilmiştir.
+Deneme fiyat eğrisi: 100x200 beyaz standart 3500 TL baz alınır. Renkli +%12, duble +%40. Bayi fiyatları değişmedi.
