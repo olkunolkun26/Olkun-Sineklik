@@ -1,3 +1,3 @@
 # OLKUN SİNEKLİK Premium Teklif Sistemi
 
-Son kullanıcı fiyatları gerçek satış referanslarına göre orantılı fiyat eğrisiyle güncellendi. Bayi fiyatları değişmedi.
+Son kullanıcı fiyat eğrisi düzeltildi: beyaz standart baz fiyat hesaplanır, renkli ve duble farkları bunun üzerine uygulanır.
