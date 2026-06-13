@@ -24,6 +24,15 @@
         </div>
         <div id="savedList"></div>
       </section>
+
+      <section id="kesimPanel" class="kesim-panel hidden">
+        <div class="saved-head">
+          <h2>Kesim Ölçüleri</h2>
+          <button id="closeKesimBtn" class="small-close" type="button">Kapat</button>
+        </div>
+        <div id="kesimIcerik"></div>
+        <button id="kesimYazdirBtn" class="cut-print-btn" type="button">Kesim Listesini Yazdır</button>
+      </section>
     </section>
 
     <section id="quoteScreen" class="quote-screen hidden">
@@ -149,6 +158,21 @@
       <div id="pToplamAdet"></div>
       <div id="pFiyat" class="print-total"></div>
       <div id="pOdeme" class="print-payment"></div>
+      <br>
+      <strong>OLKUN SİNEKLİK</strong>
+    </div>
+  </section>
+
+
+  <section id="kesimPrintArea">
+    <div class="print-doc">
+      <div class="print-head">
+        <h2>OLKUN SİNEKLİK KESİM ÖLÇÜLERİ</h2>
+        <div>Müşteri: <span id="kpMusteri"></span></div>
+        <div>Telefon: <span id="kpTelefon"></span></div>
+        <div>Adres: <span id="kpAdres"></span></div>
+      </div>
+      <div id="kpListe"></div>
       <br>
       <strong>OLKUN SİNEKLİK</strong>
     </div>

@@ -242,6 +242,7 @@ function renderSavedList() {
       </div>
       <div class="saved-actions">
         <button class="load-btn" type="button" onclick="teklifiYukle(${q.id})">Aç</button>
+        <button class="cut-btn" type="button" onclick="kesimOlcusuGoster(${q.id})">Kesim Ölçüsü</button>
         <button class="paid-btn" type="button" onclick="odendi(${q.id})">Ödendi</button>
         <button class="delete-btn" type="button" onclick="teklifiSil(${q.id})">Sil</button>
       </div>
@@ -285,6 +286,90 @@ function teklifiYukle(id) {
   }
 
   hesapla();
+}
+
+
+function formatCm(value) {
+  const n = Math.round(Number(value) * 10) / 10;
+  return Number.isInteger(n) ? String(n) : String(n).replace(".", ",");
+}
+
+function kesimHesapla(en, boy) {
+  return {
+    kesimEn: en - 5.5,
+    kesimBoy: boy - 3.5,
+    kanat: boy - 9.2,
+    tulBoyu: boy - 6,
+    tepe: Math.round(en * 0.53),
+    ip: ((en + boy) * 2) + 30
+  };
+}
+
+function kesimOlcusuGoster(id) {
+  const q = getSaved().find((x) => x.id === id);
+  if (!q) return;
+
+  document.getElementById("savedPanel").classList.add("hidden");
+  document.getElementById("kesimPanel").classList.remove("hidden");
+
+  let html = '<div class="kesim-title">' + (q.customer || "İsimsiz müşteri") + '</div>';
+  html += '<div class="kesim-sub">' + (q.phone || "-") + '<br>' + (q.address || "-") + '</div>';
+
+  (q.rows || []).forEach((r, index) => {
+    const en = sayi(r.en);
+    const boy = sayi(r.boy);
+    const adet = sayi(r.adet) || 1;
+    const k = kesimHesapla(en, boy);
+    const renkText = r.renk === "renkli" ? "Renkli" : "Beyaz";
+    const tipText = r.duble ? "Duble" : "Standart";
+
+    html += '<div class="kesim-card">';
+    html += '<h3>' + (index + 1) + '. ' + en + ' × ' + boy + ' cm • ' + adet + ' Adet • ' + tipText + ' • ' + renkText + '</h3>';
+    html += '<div class="kesim-grid">';
+    html += '<div><span>Kesim En</span><strong>' + formatCm(k.kesimEn) + ' cm</strong></div>';
+    html += '<div><span>Kesim Boy</span><strong>' + formatCm(k.kesimBoy) + ' cm</strong></div>';
+    html += '<div><span>Kanat</span><strong>' + formatCm(k.kanat) + ' cm</strong></div>';
+    html += '<div><span>Tül Boyu</span><strong>' + formatCm(k.tulBoyu) + ' cm</strong></div>';
+    html += '<div><span>Tül Tepe</span><strong>' + k.tepe + '</strong></div>';
+    html += '<div><span>İp Uzunluğu</span><strong>' + formatCm(k.ip) + ' cm</strong></div>';
+    html += '</div></div>';
+  });
+
+  document.getElementById("kesimIcerik").innerHTML = html;
+  window.__aktifKesimTeklif = q;
+}
+
+function kesimYazdir() {
+  const q = window.__aktifKesimTeklif;
+  if (!q) return;
+
+  document.getElementById("kpMusteri").innerText = q.customer || "-";
+  document.getElementById("kpTelefon").innerText = q.phone || "-";
+  document.getElementById("kpAdres").innerText = q.address || "-";
+
+  let html = "";
+
+  (q.rows || []).forEach((r, index) => {
+    const en = sayi(r.en);
+    const boy = sayi(r.boy);
+    const adet = sayi(r.adet) || 1;
+    const k = kesimHesapla(en, boy);
+    const renkText = r.renk === "renkli" ? "Renkli" : "Beyaz";
+    const tipText = r.duble ? "Duble" : "Standart";
+
+    html += '<div class="kesim-print-item">';
+    html += '<strong>' + (index + 1) + ') Bitmiş Ölçü: ' + en + ' × ' + boy + ' cm - ' + adet + ' Adet - ' + tipText + ' - ' + renkText + '</strong><br>';
+    html += 'Kesim En: ' + formatCm(k.kesimEn) + ' cm<br>';
+    html += 'Kesim Boy: ' + formatCm(k.kesimBoy) + ' cm<br>';
+    html += 'Kanat: ' + formatCm(k.kanat) + ' cm<br>';
+    html += 'Tül Boyu: ' + formatCm(k.tulBoyu) + ' cm<br>';
+    html += 'Tül Tepe Sayısı: ' + k.tepe + '<br>';
+    html += 'İp Uzunluğu: ' + formatCm(k.ip) + ' cm';
+    html += '</div>';
+  });
+
+  document.getElementById("kpListe").innerHTML = html;
+  window.print();
 }
 
 function whatsappGonder() {
@@ -376,6 +461,11 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("closeSavedBtn").addEventListener("click", () => {
     document.getElementById("savedPanel").classList.add("hidden");
   });
+  document.getElementById("closeKesimBtn").addEventListener("click", () => {
+    document.getElementById("kesimPanel").classList.add("hidden");
+    document.getElementById("savedPanel").classList.remove("hidden");
+  });
+  document.getElementById("kesimYazdirBtn").addEventListener("click", kesimYazdir);
 
   document.getElementById("backHomeBtn").addEventListener("click", anaEkran);
   document.getElementById("quoteSavedBtn").addEventListener("click", sonTekliflereGit);

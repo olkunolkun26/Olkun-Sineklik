@@ -1,3 +1,3 @@
 # OLKUN SİNEKLİK
 
-WhatsApp mesajı profesyonel kart/tabela formatına çevrildi.
+Son Teklifler kısmına Kesim Ölçüsü butonu eklendi. Kesim ölçüleri verilen formüllere göre otomatik hesaplanır.
