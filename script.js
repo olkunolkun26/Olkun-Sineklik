@@ -10,29 +10,36 @@ function sonKullaniciFiyati(en,boy,renk,duble){
   const alan = (en * boy) / 10000;
   let beyazStandart = 0;
 
-  // 100x200 beyaz standart = 3500 TL baz alınır.
-  // 60x120 civarı küçük ölçüler yaklaşık 1500 TL bandına iner.
-  if (alan <= 2) {
-    beyazStandart = 375 + (alan * 1562.5);
+  // Ana baz: 100x200 beyaz standart = 3.500 TL
+  // Küçük ölçü, orta ölçü ve büyük ölçüler için kademeli artan mantıklı eğri.
+  if (alan <= 0.72) {
+    beyazStandart = 1500;
+  } else if (alan <= 1.368) {
+    beyazStandart = 1500 + ((alan - 0.72) * 785);
+  } else if (alan <= 2) {
+    beyazStandart = 2009 + ((alan - 1.368) * 2360);
   } else {
-    beyazStandart = 3500 + ((alan - 2) * 465);
+    beyazStandart = 3500 + ((alan - 2) * 500);
   }
 
-  // Çok geniş ölçülerde malzeme/işçilik artışını dengelemek için genişlik farkı eklenir.
+  // Çok geniş ürünlerde profil/işçilik etkisi.
   if (en > 300) {
     beyazStandart += (en - 300) * 12;
   }
 
   let fiyat = beyazStandart;
 
+  // Renkli farkı saha satışlarına göre daha dengeli: +%12
   if (renk === "renkli") {
-    fiyat *= 1.15;
+    fiyat *= 1.12;
   }
 
+  // Duble farkı: +%40
   if (duble) {
     fiyat *= 1.40;
   }
 
+  // Sahada temiz fiyat için 50 TL'ye yuvarla
   return Math.round(fiyat / 50) * 50;
 }
 
