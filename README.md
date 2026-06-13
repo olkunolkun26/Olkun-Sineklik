@@ -1,3 +1,3 @@
 # OLKUN SİNEKLİK Premium Teklif Sistemi
 
-Sadece WhatsApp mesaj şablonu düzeltildi; diğer ekran geçişleri korunmuştur.
+Temiz çalışan sürüm. Yeni Teklif, Son Teklifler ve WhatsApp şablonu test edilmiştir.
