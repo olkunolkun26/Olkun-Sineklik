@@ -1,1 +1,1 @@
-{"name":"olkun-sineklik-premium","version":"2.0.0","private":true,"scripts":{"start":"vercel dev","deploy":"vercel --prod"}}
+{"name":"olkun-sineklik-premium-kayitli","version":"2.1.0","private":true,"scripts":{"start":"vercel dev","deploy":"vercel --prod"}}

@@ -1,13 +1,138 @@
-<!DOCTYPE html><html lang="tr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>OLKUN SİNEKLİK | Premium Teklif Sistemi</title><link rel="stylesheet" href="style.css"></head><body>
-<main class="app">
-<section id="welcomeScreen" class="welcome-screen"><div class="brand-card"><div class="brand-main">OLKUN</div><div class="brand-sub">SİNEKLİK</div></div><p class="welcome-text">Plise Sineklik Teklif Sistemi</p><button id="startBtn" class="primary-xl">Yeni Teklif Oluştur</button></section>
-<section id="quoteScreen" class="quote-screen hidden">
-<header class="top-header"><div class="mini-brand"><strong>OLKUN</strong><span>SİNEKLİK</span></div><div class="top-title"><h1>Teklif Ekranı</h1><p>Plise sineklik saha sistemi</p></div></header>
-<section class="panel"><div class="info-grid"><div><label>Tarih</label><input id="tarih" readonly></div><div><label>Telefon</label><input id="telefon" placeholder="Telefon"></div><div><label>Müşteri</label><input id="musteri" placeholder="Müşteri adı"></div><div><label>Mod</label><select id="mod"><option value="bayi">Bayi</option><option value="son">Son Kullanıcı</option></select></div></div><label class="address-label">Adres</label><textarea id="adres" placeholder="Müşteri adresi"></textarea><div class="info-grid lower-grid"><div><label>Satır Fiyatı</label><select id="fiyatGorunum"><option value="satir">Açık</option><option value="gizli">Gizli</option></select></div></div></section>
-<section class="table-panel"><div class="row-head"><div>En</div><div>Boy</div><div>R</div><div>B</div><div>Adet</div><div>Duble</div><div>Fiyat</div></div><div id="rows"></div></section>
-<section class="button-grid"><button id="hesaplaBtn" class="btn premium">Hesapla</button><button id="sifirlaBtn" class="btn dark">Sıfırla</button></section>
-<section class="action-stack"><button id="whatsappBtn" class="btn whatsapp">Teklifi WhatsApp'tan Gönder</button><div class="button-grid"><button id="pdfBtn" class="btn gold">PDF / Yazdır</button><button id="satirEkleBtn" class="btn dark">+ Satır Ekle</button></div></section>
-</section></main>
-<div class="sticky-total"><div><span>Toplam Adet</span><strong id="toplamAdet">0</strong></div><div><span>Toplam Fiyat</span><strong id="toplamFiyat">0 TL</strong></div></div>
-<section id="printArea"><div class="print-doc"><div class="print-head"><h2>OLKUN SİNEKLİK TEKLİF</h2><div>Tarih: <span id="pTarih"></span></div><div>Müşteri: <span id="pMusteri"></span></div><div>Adres: <span id="pAdres"></span></div><div>Telefon: <span id="pTelefon"></span></div></div><h3>Ölçüler</h3><div id="pKalemler"></div><div id="pToplamAdet"></div><div id="pFiyat" class="print-total"></div><br><strong>OLKUN SİNEKLİK</strong></div></section>
-<script src="script.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OLKUN SİNEKLİK | Premium Teklif Sistemi</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <section id="welcomeScreen" class="welcome-screen">
+      <div class="brand-card">
+        <div class="brand-main">OLKUN</div>
+        <div class="brand-sub">SİNEKLİK</div>
+      </div>
+      <p class="welcome-text">Plise Sineklik Teklif Sistemi</p>
+      <button id="startBtn" class="primary-xl">Yeni Teklif Oluştur</button>
+      <button id="showSavedBtn" class="secondary-xl">Son Teklifler</button>
+
+      <section id="savedPanel" class="saved-panel hidden">
+        <div class="saved-head">
+          <h2>Son Teklifler</h2>
+          <button id="closeSavedBtn" class="small-close">Kapat</button>
+        </div>
+        <div id="savedList"></div>
+      </section>
+    </section>
+
+    <section id="quoteScreen" class="quote-screen hidden">
+      <header class="top-header">
+        <div class="mini-brand">
+          <strong>OLKUN</strong>
+          <span>SİNEKLİK</span>
+        </div>
+        <div class="top-title">
+          <h1>Teklif Ekranı</h1>
+          <p>Plise sineklik saha sistemi</p>
+        </div>
+      </header>
+
+      <section class="panel">
+        <div class="info-grid">
+          <div>
+            <label>Tarih</label>
+            <input id="tarih" readonly>
+          </div>
+          <div>
+            <label>Telefon</label>
+            <input id="telefon" placeholder="Telefon">
+          </div>
+          <div>
+            <label>Müşteri</label>
+            <input id="musteri" placeholder="Müşteri adı">
+          </div>
+          <div>
+            <label>Mod</label>
+            <select id="mod">
+              <option value="bayi">Bayi</option>
+              <option value="son">Son Kullanıcı</option>
+            </select>
+          </div>
+        </div>
+
+        <label class="address-label">Adres</label>
+        <textarea id="adres" placeholder="Müşteri adresi"></textarea>
+
+        <div class="info-grid lower-grid">
+          <div>
+            <label>Satır Fiyatı</label>
+            <select id="fiyatGorunum">
+              <option value="satir">Açık</option>
+              <option value="gizli">Gizli</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section class="table-panel">
+        <div class="row-head">
+          <div>En</div>
+          <div>Boy</div>
+          <div>R</div>
+          <div>B</div>
+          <div>Adet</div>
+          <div>Duble</div>
+          <div>Fiyat</div>
+        </div>
+        <div id="rows"></div>
+      </section>
+
+      <section class="button-grid">
+        <button id="hesaplaBtn" class="btn premium">Hesapla</button>
+        <button id="sifirlaBtn" class="btn dark">Sıfırla</button>
+      </section>
+
+      <section class="action-stack">
+        <button id="saveBtn" class="btn save">Teklifi Kaydet</button>
+        <button id="whatsappBtn" class="btn whatsapp">Teklifi WhatsApp'tan Gönder</button>
+        <div class="button-grid">
+          <button id="pdfBtn" class="btn gold">PDF / Yazdır</button>
+          <button id="satirEkleBtn" class="btn dark">+ Satır Ekle</button>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div class="sticky-total">
+    <div>
+      <span>Toplam Adet</span>
+      <strong id="toplamAdet">0</strong>
+    </div>
+    <div>
+      <span>Toplam Fiyat</span>
+      <strong id="toplamFiyat">0 TL</strong>
+    </div>
+  </div>
+
+  <section id="printArea">
+    <div class="print-doc">
+      <div class="print-head">
+        <h2>OLKUN SİNEKLİK TEKLİF</h2>
+        <div>Tarih: <span id="pTarih"></span></div>
+        <div>Müşteri: <span id="pMusteri"></span></div>
+        <div>Adres: <span id="pAdres"></span></div>
+        <div>Telefon: <span id="pTelefon"></span></div>
+      </div>
+      <h3>Ölçüler</h3>
+      <div id="pKalemler"></div>
+      <div id="pToplamAdet"></div>
+      <div id="pFiyat" class="print-total"></div>
+      <br>
+      <strong>OLKUN SİNEKLİK</strong>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
