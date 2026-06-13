@@ -1,3 +1,1 @@
-# OLKUN SİNEKLİK Teklif Sistemi
-
-Teklif No kaldırıldı, adres alanı eklendi.
+# OLKUN SİNEKLİK Premium Teklif Sistemi
