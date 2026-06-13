@@ -72,6 +72,10 @@
               <option value="gizli">Gizli</option>
             </select>
           </div>
+          <div>
+            <label>Ön Ödeme</label>
+            <input id="onOdeme" type="number" placeholder="0">
+          </div>
         </div>
       </section>
 
@@ -86,6 +90,17 @@
           <div>Fiyat</div>
         </div>
         <div id="rows"></div>
+      </section>
+
+      <section class="payment-panel">
+        <div>
+          <span>Ön Ödeme</span>
+          <strong id="onOdemeGoster">0 TL</strong>
+        </div>
+        <div>
+          <span>Kalan</span>
+          <strong id="kalanGoster">0 TL</strong>
+        </div>
       </section>
 
       <section class="button-grid">
@@ -128,6 +143,7 @@
       <div id="pKalemler"></div>
       <div id="pToplamAdet"></div>
       <div id="pFiyat" class="print-total"></div>
+      <div id="pOdeme" class="print-payment"></div>
       <br>
       <strong>OLKUN SİNEKLİK</strong>
     </div>
