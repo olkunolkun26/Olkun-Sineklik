@@ -3,188 +3,131 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OLKUN SİNEKLİK | Premium Teklif Sistemi</title>
+  <title>OLKUN SİNEKLİK</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main class="app">
-    <section id="welcomeScreen" class="welcome-screen">
-      <div class="brand-card">
-        <div class="brand-main">OLKUN</div>
-        <div class="brand-sub">SİNEKLİK</div>
+    <section id="homeScreen" class="home">
+      <div class="brand">
+        <div class="brand-big">OLKUN</div>
+        <div class="brand-small">SİNEKLİK</div>
       </div>
-      <p class="welcome-text">Plise Sineklik Teklif Sistemi</p>
-      <button id="bayiGirisBtn" class="primary-xl" type="button">Bayi Girişi</button>
-      <button id="musteriGirisBtn" class="secondary-xl" type="button">Müşteri Girişi</button>
-      <button id="showSavedBtn" class="secondary-xl saved-only" type="button">Son Teklifler</button>
+      <p class="subtitle">Plise Sineklik Teklif Sistemi</p>
 
+      <button id="bayiBtn" class="btn-main gold" type="button">Bayi Girişi</button>
+      <button id="musteriBtn" class="btn-main dark" type="button">Müşteri Girişi</button>
+      <button id="savedBtn" class="btn-main dark" type="button">Son Teklifler</button>
 
-      <section id="bayiSifrePanel" class="password-panel hidden">
+      <section id="passwordBox" class="panel small hidden">
         <h2>Bayi Girişi</h2>
-        <p>Devam etmek için bayi şifresini girin.</p>
-        <input id="bayiSifre" type="password" inputmode="numeric" placeholder="Şifre">
-        <button id="bayiSifreOnayBtn" class="primary-xl" type="button">Giriş Yap</button>
-        <button id="bayiSifreKapatBtn" class="secondary-xl" type="button">Kapat</button>
+        <p>Şifreyi girin</p>
+        <input id="bayiPass" type="password" inputmode="numeric" placeholder="Şifre">
+        <button id="passOkBtn" class="btn-main gold" type="button">Giriş Yap</button>
+        <button id="passCancelBtn" class="btn-main dark" type="button">Kapat</button>
       </section>
 
-      <section id="savedPanel" class="saved-panel hidden">
-        <div class="saved-head">
+      <section id="savedBox" class="panel hidden">
+        <div class="head-row">
           <h2>Son Teklifler</h2>
-          <button id="closeSavedBtn" class="small-close" type="button">Kapat</button>
+          <button id="savedCloseBtn" class="mini-btn" type="button">Kapat</button>
         </div>
         <div id="savedList"></div>
       </section>
 
-      <section id="kesimPanel" class="kesim-panel hidden">
-        <div class="saved-head">
+      <section id="cutBox" class="panel hidden">
+        <div class="head-row">
           <h2>Kesim Ölçüleri</h2>
-          <button id="closeKesimBtn" class="small-close" type="button">Kapat</button>
+          <button id="cutCloseBtn" class="mini-btn" type="button">Kapat</button>
         </div>
-        <div id="kesimIcerik"></div>
-        <button id="kesimYazdirBtn" class="cut-print-btn" type="button">Kesim Listesini Yazdır</button>
+        <div id="cutContent"></div>
+        <button id="cutPrintBtn" class="btn-main gold" type="button">Yazdır</button>
       </section>
     </section>
 
-    <section id="quoteScreen" class="quote-screen hidden">
-      <header class="top-header">
-        <div class="mini-brand">
-          <strong>OLKUN</strong>
-          <span>SİNEKLİK</span>
-        </div>
-        <div class="top-title">
-          <h1>Teklif Ekranı</h1>
+    <section id="quoteScreen" class="quote hidden">
+      <header class="top">
+        <div class="mini-brand"><b>OLKUN</b><span>SİNEKLİK</span></div>
+        <div>
+          <h1 id="screenTitle">Teklif Ekranı</h1>
           <p>Plise sineklik saha sistemi</p>
         </div>
       </header>
 
-      <section class="top-nav">
-        <button id="backHomeBtn" class="btn dark small-nav" type="button">Ana Ekran</button>
-        <button id="quoteSavedBtn" class="btn gold small-nav" type="button">Son Teklifler</button>
+      <div class="top-actions">
+        <button id="homeBtn" class="btn small dark" type="button">Ana Ekran</button>
+        <button id="quoteSavedBtn" class="btn small gold" type="button">Son Teklifler</button>
+      </div>
+
+      <section class="panel">
+        <div class="grid2">
+          <div><label>Tarih</label><input id="tarih" readonly></div>
+          <div><label>Telefon</label><input id="telefon" placeholder="Telefon"></div>
+          <div><label>Müşteri</label><input id="musteri" placeholder="Müşteri adı"></div>
+          <div><label>Mod</label><select id="mod"><option value="bayi">Bayi</option><option value="son">Müşteri</option></select></div>
+        </div>
+        <label class="mt">Adres</label>
+        <textarea id="adres" placeholder="Müşteri adresi"></textarea>
+        <div class="grid2 mt">
+          <div><label>Satır Fiyatı</label><select id="fiyatGorunum"><option value="satir">Açık</option><option value="gizli">Gizli</option></select></div>
+          <div id="onOdemeWrap"><label>Ön Ödeme</label><input id="onOdeme" type="number" placeholder="0"></div>
+        </div>
       </section>
 
       <section class="panel">
-        <div class="info-grid">
-          <div>
-            <label>Tarih</label>
-            <input id="tarih" readonly>
-          </div>
-          <div>
-            <label>Telefon</label>
-            <input id="telefon" placeholder="Telefon">
-          </div>
-          <div>
-            <label>Müşteri</label>
-            <input id="musteri" placeholder="Müşteri adı">
-          </div>
-          <div>
-            <label>Mod</label>
-            <select id="mod">
-              <option value="bayi">Bayi</option>
-              <option value="son">Son Kullanıcı</option>
-            </select>
-          </div>
-        </div>
-
-        <label class="address-label">Adres</label>
-        <textarea id="adres" placeholder="Müşteri adresi"></textarea>
-
-        <div class="info-grid lower-grid">
-          <div>
-            <label>Satır Fiyatı</label>
-            <select id="fiyatGorunum">
-              <option value="satir">Açık</option>
-              <option value="gizli">Gizli</option>
-            </select>
-          </div>
-          <div>
-            <label>Ön Ödeme</label>
-            <input id="onOdeme" type="number" placeholder="0">
-          </div>
-        </div>
-      </section>
-
-      <section class="table-panel">
         <div class="row-head">
-          <div>En</div>
-          <div>Boy</div>
-          <div>R</div>
-          <div>B</div>
-          <div>Adet</div>
-          <div>Duble</div>
-          <div>Fiyat</div>
+          <div>En</div><div>Boy</div><div>R</div><div>B</div><div>Adet</div><div>Duble</div><div>Fiyat</div>
         </div>
         <div id="rows"></div>
       </section>
 
-      <section class="payment-panel">
-        <div>
-          <span>Ön Ödeme</span>
-          <strong id="onOdemeGoster">0 TL</strong>
-        </div>
-        <div>
-          <span>Kalan</span>
-          <strong id="kalanGoster">0 TL</strong>
-        </div>
+      <section id="paymentPanel" class="payment">
+        <div><span>Ödenen</span><b id="paidShow">0 TL</b></div>
+        <div><span>Kalan</span><b id="remainShow">0 TL</b></div>
       </section>
 
-      <section class="button-grid">
-        <button id="hesaplaBtn" class="btn premium" type="button">Hesapla</button>
-        <button id="sifirlaBtn" class="btn dark" type="button">Sıfırla</button>
-      </section>
+      <div class="top-actions">
+        <button id="calcBtn" class="btn gold" type="button">Hesapla</button>
+        <button id="clearBtn" class="btn dark" type="button">Sıfırla</button>
+      </div>
 
-      <section class="action-stack">
-        <button id="saveBtn" class="btn save" type="button">Teklifi Kaydet</button>
-        <button id="whatsappBtn" class="btn whatsapp" type="button">Teklifi WhatsApp'tan Gönder</button>
-        <div class="button-grid">
-          <button id="pdfBtn" class="btn gold" type="button">PDF / Yazdır</button>
-          <button id="satirEkleBtn" class="btn dark" type="button">+ Satır Ekle</button>
-        </div>
-      </section>
+      <button id="saveBtn" class="btn full blue" type="button">Teklifi Kaydet</button>
+      <button id="whatsappBtn" class="btn full whatsapp" type="button">WhatsApp Teklif Gönder</button>
+
+      <div class="top-actions">
+        <button id="pdfBtn" class="btn gold" type="button">PDF / Yazdır</button>
+        <button id="addRowBtn" class="btn dark" type="button">+ Satır Ekle</button>
+      </div>
     </section>
   </main>
 
-  <div class="sticky-total">
-    <div>
-      <span>Toplam Adet</span>
-      <strong id="toplamAdet">0</strong>
-    </div>
-    <div>
-      <span>Toplam Fiyat</span>
-      <strong id="toplamFiyat">0 TL</strong>
-    </div>
+  <div class="totalbar">
+    <div><span>Toplam Adet</span><b id="totalQty">0</b></div>
+    <div><span>Toplam Fiyat</span><b id="totalPrice">0 TL</b></div>
   </div>
 
-  <section id="printArea">
+  <section id="printArea" class="print-area">
     <div class="print-doc">
-      <div class="print-head">
-        <h2>OLKUN SİNEKLİK TEKLİF</h2>
-        <div>Tarih: <span id="pTarih"></span></div>
-        <div>Müşteri: <span id="pMusteri"></span></div>
-        <div>Adres: <span id="pAdres"></span></div>
-        <div>Telefon: <span id="pTelefon"></span></div>
-      </div>
-      <h3>Ölçüler</h3>
-      <div id="pKalemler"></div>
-      <div id="pToplamAdet"></div>
-      <div id="pFiyat" class="print-total"></div>
-      <div id="pOdeme" class="print-payment"></div>
-      <br>
-      <strong>OLKUN SİNEKLİK</strong>
+      <h2>OLKUN SİNEKLİK TEKLİF</h2>
+      <p>Tarih: <span id="pTarih"></span></p>
+      <p>Müşteri: <span id="pMusteri"></span></p>
+      <p>Telefon: <span id="pTelefon"></span></p>
+      <p>Adres: <span id="pAdres"></span></p>
+      <hr>
+      <div id="pRows"></div>
+      <h3 id="pTotal"></h3>
+      <p id="pPayment"></p>
     </div>
   </section>
 
-
-  <section id="kesimPrintArea">
+  <section id="cutPrintArea" class="print-area">
     <div class="print-doc">
-      <div class="print-head">
-        <h2>OLKUN SİNEKLİK KESİM ÖLÇÜLERİ</h2>
-        <div>Müşteri: <span id="kpMusteri"></span></div>
-        <div>Telefon: <span id="kpTelefon"></span></div>
-        <div>Adres: <span id="kpAdres"></span></div>
-      </div>
-      <div id="kpListe"></div>
-      <br>
-      <strong>OLKUN SİNEKLİK</strong>
+      <h2>OLKUN SİNEKLİK KESİM ÖLÇÜLERİ</h2>
+      <p>Müşteri: <span id="cpMusteri"></span></p>
+      <p>Telefon: <span id="cpTelefon"></span></p>
+      <p>Adres: <span id="cpAdres"></span></p>
+      <hr>
+      <div id="cpRows"></div>
     </div>
   </section>
 

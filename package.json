@@ -1,1 +1,1 @@
-{"name":"olkun-whatsapp-profesyonel-calisan","version":"3.1.0","private":true,"scripts":{"start":"vercel dev","deploy":"vercel --prod"}}
+{"name":"olkun-stabil-v4","version":"4.0.0","private":true,"scripts":{"start":"vercel dev","deploy":"vercel --prod"}}

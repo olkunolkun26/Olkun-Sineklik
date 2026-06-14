@@ -1,3 +1,3 @@
-# OLKUN SİNEKLİK
+# OLKUN SİNEKLİK Stabil V4
 
-Bayi ve müşteri teklifleri ayrı kaydedilir. Kayıtlı tekliflerde ara ödeme ekleme, kalan hesaplama ve kesim ölçüsü bulunur.
+Tüm butonlar tek parça temiz kodla yeniden kuruldu.
