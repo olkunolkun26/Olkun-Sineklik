@@ -1,3 +1,3 @@
 # OLKUN SİNEKLİK Stabil V7
 
-Ana ekranda toplam fiyat barı gizlendi. Toplam fiyat sadece teklif ekranında görünür.
+Toplam adet/fiyat barı ana ekrandan tamamen kaldırıldı; sadece teklif ekranı içinde görünür.
