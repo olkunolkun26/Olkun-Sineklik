@@ -17,11 +17,10 @@
 
       <button id="bayiBtn" class="btn-main gold" type="button">Bayi Girişi</button>
       <button id="musteriBtn" class="btn-main dark" type="button">Müşteri Girişi</button>
-      <button id="savedBtn" class="btn-main dark" type="button">Son Teklifler</button>
 
       <section id="passwordBox" class="panel small hidden">
         <h2>Bayi Girişi</h2>
-        <p>Şifreyi girin</p>
+        <p>Devam etmek için bayi şifresini girin.</p>
         <input id="bayiPass" type="password" inputmode="numeric" placeholder="Şifre">
         <button id="passOkBtn" class="btn-main gold" type="button">Giriş Yap</button>
         <button id="passCancelBtn" class="btn-main dark" type="button">Kapat</button>
@@ -29,7 +28,7 @@
 
       <section id="savedBox" class="panel hidden">
         <div class="head-row">
-          <h2>Son Teklifler</h2>
+          <h2 id="savedTitle">Son Teklifler</h2>
           <button id="savedCloseBtn" class="mini-btn" type="button">Kapat</button>
         </div>
         <div id="savedList"></div>
@@ -81,7 +80,7 @@
         <div id="rows"></div>
       </section>
 
-      <section id="paymentPanel" class="payment">
+      <section class="payment">
         <div><span>Ödenen</span><b id="paidShow">0 TL</b></div>
         <div><span>Kalan</span><b id="remainShow">0 TL</b></div>
       </section>
