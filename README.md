@@ -1,3 +1,3 @@
 # OLKUN SİNEKLİK
 
-Son Teklifler kısmına Kesim Ölçüsü butonu eklendi. Kesim ölçüleri verilen formüllere göre otomatik hesaplanır.
+Bayi girişi şifreli (4321), müşteri girişi şifresiz ve son kullanıcı fiyatlı olarak ayrıldı.

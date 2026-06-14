@@ -14,8 +14,18 @@
         <div class="brand-sub">SİNEKLİK</div>
       </div>
       <p class="welcome-text">Plise Sineklik Teklif Sistemi</p>
-      <button id="startBtn" class="primary-xl" type="button">Yeni Teklif Oluştur</button>
-      <button id="showSavedBtn" class="secondary-xl" type="button">Son Teklifler</button>
+      <button id="bayiGirisBtn" class="primary-xl" type="button">Bayi Girişi</button>
+      <button id="musteriGirisBtn" class="secondary-xl" type="button">Müşteri Girişi</button>
+      <button id="showSavedBtn" class="secondary-xl saved-only" type="button">Son Teklifler</button>
+
+
+      <section id="bayiSifrePanel" class="password-panel hidden">
+        <h2>Bayi Girişi</h2>
+        <p>Devam etmek için bayi şifresini girin.</p>
+        <input id="bayiSifre" type="password" inputmode="numeric" placeholder="Şifre">
+        <button id="bayiSifreOnayBtn" class="primary-xl" type="button">Giriş Yap</button>
+        <button id="bayiSifreKapatBtn" class="secondary-xl" type="button">Kapat</button>
+      </section>
 
       <section id="savedPanel" class="saved-panel hidden">
         <div class="saved-head">

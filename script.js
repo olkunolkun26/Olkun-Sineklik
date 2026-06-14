@@ -1,4 +1,5 @@
 
+let girisTipi = 'bayi';
 let satirNo = 0;
 let sonKalemler = [];
 let sonToplam = 0;
@@ -90,7 +91,7 @@ function hesapla() {
   let toplam = 0;
   let adetToplam = 0;
   const kalemler = [];
-  const mod = document.getElementById("mod").value;
+  const mod = girisTipi === "musteri" ? "son" : document.getElementById("mod").value;
   const fiyatGizli = document.getElementById("fiyatGorunum").value === "gizli";
 
   rows.forEach((row) => {
@@ -160,17 +161,30 @@ function sifirla() {
   hesapla();
 }
 
-function yeniTeklif() {
+function yeniTeklif(tip = "bayi") {
+  girisTipi = tip;
+  document.body.classList.toggle("customer-mode", tip === "musteri");
+  const onOdemeEl = document.getElementById("onOdeme");
+  if (onOdemeEl && onOdemeEl.parentElement) {
+    onOdemeEl.parentElement.style.display = tip === "musteri" ? "none" : "block";
+  }
   document.getElementById("welcomeScreen").classList.add("hidden");
   document.getElementById("quoteScreen").classList.remove("hidden");
   document.getElementById("savedPanel").classList.add("hidden");
+  const kesimPanel = document.getElementById("kesimPanel");
+  if (kesimPanel) kesimPanel.classList.add("hidden");
+  const modEl = document.getElementById("mod");
+  modEl.value = tip === "musteri" ? "son" : "bayi";
   sifirla();
 }
 
 function anaEkran() {
+  document.body.classList.remove("customer-mode");
   document.getElementById("quoteScreen").classList.add("hidden");
   document.getElementById("welcomeScreen").classList.remove("hidden");
   document.getElementById("savedPanel").classList.add("hidden");
+  const kp = document.getElementById("kesimPanel");
+  if (kp) kp.classList.add("hidden");
 }
 
 function sonTekliflereGit() {
@@ -193,6 +207,7 @@ function setSaved(list) {
 }
 
 function teklifiKaydet() {
+  if (girisTipi === "musteri") { alert("Kayıt işlemi bayi girişinde kullanılabilir."); return; }
   hesapla();
 
   if (sonKalemler.length === 0) {
@@ -453,7 +468,31 @@ function pdfOlustur() {
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("tarih").value = bugun();
 
-  document.getElementById("startBtn").addEventListener("click", yeniTeklif);
+  document.getElementById("bayiGirisBtn").addEventListener("click", () => {
+    document.getElementById("bayiSifrePanel").classList.remove("hidden");
+    document.getElementById("bayiSifre").focus();
+  });
+
+  document.getElementById("bayiSifreOnayBtn").addEventListener("click", () => {
+    const sifre = document.getElementById("bayiSifre").value;
+    if (sifre === "4321") {
+      document.getElementById("bayiSifre").value = "";
+      document.getElementById("bayiSifrePanel").classList.add("hidden");
+      yeniTeklif("bayi");
+    } else {
+      alert("Şifre hatalı");
+    }
+  });
+
+  document.getElementById("bayiSifre").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") document.getElementById("bayiSifreOnayBtn").click();
+  });
+
+  document.getElementById("bayiSifreKapatBtn").addEventListener("click", () => {
+    document.getElementById("bayiSifrePanel").classList.add("hidden");
+  });
+
+  document.getElementById("musteriGirisBtn").addEventListener("click", () => yeniTeklif("musteri"));
   document.getElementById("showSavedBtn").addEventListener("click", () => {
     document.getElementById("savedPanel").classList.remove("hidden");
     renderSavedList();

@@ -13,3 +13,10 @@
 #kesimPrintArea{display:none}
 .kesim-print-item{border-bottom:1px solid #ddd;padding:10px 0;font-size:14px;line-height:1.5}
 @media print{#kesimPrintArea{display:block}.app,.sticky-total,#printArea{display:none!important}}
+
+.password-panel{width:100%;max-width:360px;background:rgba(255,255,255,.96);border-radius:28px;padding:18px;margin-top:18px;box-shadow:0 16px 40px rgba(0,0,0,.28);text-align:center}
+.password-panel h2{margin:0 0 6px;color:var(--anthracite);font-size:20px}
+.password-panel p{margin:0 0 12px;color:#666;font-size:13px}
+.password-panel input{height:50px;text-align:center;font-size:20px;margin-bottom:10px}
+.customer-mode .saved-only,.customer-mode #quoteSavedBtn,.customer-mode #saveBtn,.customer-mode .payment-panel{display:none!important}
+.customer-mode #mod{pointer-events:none;background:#f3f3f3}
