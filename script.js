@@ -15,9 +15,21 @@ function sonTeklifSifreKontrol(){
   }
   return true;
 }
-function showSaved(){ if(!sonTeklifSifreKontrol()) return; $("savedBox").classList.remove("hidden"); $("cutBox").classList.add("hidden"); $("savedTitle").innerText=girisTipi==="bayi"?"Bayi Teklifleri":"Müşteri Teklifleri"; renderSavedList()}
+function showSaved(){
+  if(!sonTeklifSifreKontrol()) return;
+  $("savedBox").classList.remove("hidden");
+  $("cutBox").classList.add("hidden");
+  renderSavedList();
+}
 function hideSaved(){ $("savedBox").classList.add("hidden")}
-function showSavedFromQuote(){ if(!sonTeklifSifreKontrol()) return; $("quoteScreen").classList.add("hidden"); $("homeScreen").classList.remove("hidden"); $("savedBox").classList.remove("hidden"); $("cutBox").classList.add("hidden"); $("savedTitle").innerText=girisTipi==="bayi"?"Bayi Teklifleri":"Müşteri Teklifleri"; renderSavedList()}
+function showSavedFromQuote(){
+  if(!sonTeklifSifreKontrol()) return;
+  $("quoteScreen").classList.add("hidden");
+  $("homeScreen").classList.remove("hidden");
+  $("savedBox").classList.remove("hidden");
+  $("cutBox").classList.add("hidden");
+  renderSavedList();
+}
 function sonKullaniciFiyati(en,boy,renk,duble){const alan=(en*boy)/10000;let baz=0;if(alan<=0.72)baz=1500;else if(alan<=1.368)baz=1500+((alan-0.72)*785);else if(alan<=2)baz=2009+((alan-1.368)*2360);else baz=3500+((alan-2)*500);if(en>300)baz+=(en-300)*12;if(renk==="renkli")baz*=1.12;if(duble)baz*=1.40;return Math.round(baz/50)*50}
 function addRow(data={}){satirNo++;const div=document.createElement("div");div.className="line";const renk=data.renk||"beyaz";div.innerHTML=`<input class="en" type="number" placeholder="En" value="${data.en||""}"><input class="boy" type="number" placeholder="Boy" value="${data.boy||""}"><input class="renk" name="renk_${satirNo}" type="radio" value="renkli" ${renk==="renkli"?"checked":""}><input class="renk" name="renk_${satirNo}" type="radio" value="beyaz" ${renk!=="renkli"?"checked":""}><input class="adet" type="number" value="${data.adet||1}" min="1"><input class="duble" type="checkbox" ${data.duble?"checked":""}><div class="price">0 TL</div>`;$("rows").appendChild(div);div.querySelectorAll("input").forEach(el=>{el.addEventListener("input",calc);el.addEventListener("change",calc)})}
 function getRowsData(){return Array.from(document.querySelectorAll(".line")).map(row=>({en:row.querySelector(".en").value,boy:row.querySelector(".boy").value,adet:row.querySelector(".adet").value,renk:row.querySelector(".renk:checked").value,duble:row.querySelector(".duble").checked})).filter(r=>sayi(r.en)>0&&sayi(r.boy)>0)}
@@ -26,7 +38,51 @@ function clearQuote(){$("rows").innerHTML="";$("musteri").value="";$("telefon").
 function getSaved(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]")}catch(e){return[]}}
 function setSaved(list){localStorage.setItem(STORAGE_KEY,JSON.stringify(list.slice(0,50)))}
 function saveQuote(){calc();if(!sonKalemler.length){alert("Kaydetmek için ölçü giriniz");return}const quote={id:Date.now(),type:girisTipi,date:$("tarih").value,customer:$("musteri").value||"İsimsiz müşteri",phone:$("telefon").value||"",address:$("adres").value||"",mod:girisTipi==="musteri"?"son":$("mod").value,fiyatGorunum:$("fiyatGorunum").value,total:sonToplam,totalPaid:sonOdenen,remaining:sonKalan,adet:sonAdet,rows:getRowsData()};const list=getSaved();list.unshift(quote);setSaved(list);alert("Teklif kaydedildi")}
-function renderSavedList(){const list=getSaved().filter(q=>(q.type||"bayi")===girisTipi);if(!list.length){$("savedList").innerHTML='<div class="saved-item">Kayıtlı teklif yok</div>';return}$("savedList").innerHTML=list.map(q=>{const paid=q.totalPaid??0,remain=Math.max((q.total||0)-paid,0),tip=girisTipi==="bayi"?"Bayi Teklifi":"Müşteri Teklifi";return `<div class="saved-item"><div class="saved-title">${q.customer}</div><div class="saved-meta">${q.date} • ${q.adet} adet</div><div class="saved-type">${tip}</div><div class="saved-money"><div><span>Toplam</span><strong>${tl(q.total||0)}</strong></div><div><span>Ödenen</span><strong>${tl(paid)}</strong></div><div><span>Kalan</span><strong>${tl(remain)}</strong></div></div><div class="payment-add"><input id="ara_${q.id}" type="number" placeholder="Ara ödeme"><button type="button" onclick="addPayment(${q.id})">Ekle</button></div><div class="saved-actions"><button class="load-btn" type="button" onclick="loadQuote(${q.id})">Aç</button><button class="cut-btn" type="button" onclick="showCut(${q.id})">Kesim Ölçüsü</button><button class="paid-btn" type="button" onclick="markPaid(${q.id})">Ödendi</button><button class="delete-btn" type="button" onclick="deleteQuote(${q.id})">Sil</button></div></div>`}).join("")}
+function renderSavedList(){
+  const list=getSaved();
+
+  if(!list.length){
+    $("savedList").innerHTML='<div class="saved-item">Kayıtlı teklif yok</div>';
+    return;
+  }
+
+  const bayiList=list.filter(q=>(q.type||"bayi")==="bayi");
+  const musteriList=list.filter(q=>q.type==="musteri");
+
+  function section(items,title){
+    if(!items.length)return"";
+
+    return '<div class="saved-section-title">'+title+'</div>'+items.map(q=>{
+      const paid=q.totalPaid??0;
+      const remain=Math.max((q.total||0)-paid,0);
+      const tip=(q.type||"bayi")==="bayi"?"Bayi Teklifi":"Müşteri Teklifi";
+
+      return `<div class="saved-item">
+        <div class="saved-title">${q.customer}</div>
+        <div class="saved-meta">${q.date} • ${q.adet} adet</div>
+        <div class="saved-type">${tip}</div>
+        <div class="saved-money">
+          <div><span>Toplam</span><strong>${tl(q.total||0)}</strong></div>
+          <div><span>Ödenen</span><strong>${tl(paid)}</strong></div>
+          <div><span>Kalan</span><strong>${tl(remain)}</strong></div>
+        </div>
+        <div class="payment-add">
+          <input id="ara_${q.id}" type="number" placeholder="Ara ödeme">
+          <button type="button" onclick="addPayment(${q.id})">Ekle</button>
+        </div>
+        <div class="saved-actions">
+          <button class="load-btn" type="button" onclick="loadQuote(${q.id})">Aç</button>
+          <button class="cut-btn" type="button" onclick="showCut(${q.id})">Kesim Ölçüsü</button>
+          <button class="paid-btn" type="button" onclick="markPaid(${q.id})">Ödendi</button>
+          <button class="delete-btn" type="button" onclick="deleteQuote(${q.id})">Sil</button>
+        </div>
+      </div>`;
+    }).join("");
+  }
+
+  $("savedTitle").innerText="Son Teklifler";
+  $("savedList").innerHTML=section(bayiList,"Bayi Teklifleri")+section(musteriList,"Müşteri Teklifleri");
+}
 function addPayment(id){const input=$("ara_"+id);const tutar=sayi(input&&input.value);if(tutar<=0){alert("Ara ödeme tutarı giriniz");return}const list=getSaved();const q=list.find(x=>x.id===id);if(!q)return;q.totalPaid=Math.round((q.totalPaid??0)+tutar);q.remaining=Math.max((q.total||0)-q.totalPaid,0);setSaved(list);renderSavedList()}
 function deleteQuote(id){setSaved(getSaved().filter(q=>q.id!==id));renderSavedList()}
 function markPaid(id){if(confirm("Bu teklif ödendi olarak kapatılsın mı?"))deleteQuote(id)}
@@ -36,5 +92,5 @@ function showCut(id){const q=getSaved().find(x=>x.id===id);if(!q)return;aktifKes
 function printCut(){if(!aktifKesim)return;$("cpMusteri").innerText=aktifKesim.customer||"-";$("cpTelefon").innerText=aktifKesim.phone||"-";$("cpAdres").innerText=aktifKesim.address||"-";let html="";(aktifKesim.rows||[]).forEach((r,i)=>{const en=sayi(r.en),boy=sayi(r.boy),adet=sayi(r.adet)||1,k=cutCalc(en,boy);html+=`<div class="print-item"><b>${i+1}) Bitmiş: ${en} × ${boy} cm - ${adet} Adet</b><br>Kesim En: ${cm(k.kesimEn)} cm<br>Kesim Boy: ${cm(k.kesimBoy)} cm<br>Kanat: ${cm(k.kanat)} cm<br>Tül Boyu: ${cm(k.tulBoyu)} cm<br>Tül Tepe: ${k.tepe}<br>İp Uzunluğu: ${cm(k.ip)} cm</div>`});$("cpRows").innerHTML=html;$("cutPrintArea").classList.add("print-active");window.print();setTimeout(()=>$("cutPrintArea").classList.remove("print-active"),500)}
 function sendWhatsApp(){calc();if(!sonKalemler.length){alert("Ölçü giriniz");return}const lines=[];lines.push("📋 *OLKUN SİNEKLİK TEKLİFİ*");lines.push("📅 "+$("tarih").value);lines.push("");lines.push("👤 *Müşteri:* "+($("musteri").value||"-"));lines.push("📞 *Telefon:* "+($("telefon").value||"-"));lines.push("📍 *Adres:* "+($("adres").value||"-"));lines.push("");lines.push("━━━━━━━━━━━━━━━━━━━━");sonKalemler.forEach(k=>{let urun=k.tip==="Duble"?"Duble "+k.renk:k.renk;lines.push("");lines.push("*"+k.no+". Sineklik*");lines.push("Ölçü : "+k.en+" × "+k.boy+" cm");lines.push("Ürün : "+urun);lines.push("Adet : "+k.adet)});lines.push("");lines.push("━━━━━━━━━━━━━━━━━━━━");lines.push("📦 *Toplam Adet:* "+sonAdet);lines.push("");lines.push("*OLKUN SİNEKLİK*");window.open("https://wa.me/?text="+encodeURIComponent(lines.join("\n")),"_blank")}
 function printQuote(){calc();if(!sonKalemler.length){alert("Ölçü giriniz");return}$("pTarih").innerText=$("tarih").value;$("pMusteri").innerText=$("musteri").value||"-";$("pTelefon").innerText=$("telefon").value||"-";$("pAdres").innerText=$("adres").value||"-";$("pRows").innerHTML=sonKalemler.map(k=>`<div class="print-item">${k.no}) ${k.en} × ${k.boy} cm - ${k.adet} Adet - ${k.tip} - ${k.renk}</div>`).join("");$("pTotal").innerText="Toplam: "+tl(sonToplam);$("pPayment").innerText="Ödenen: "+tl(sonOdenen)+" / Kalan: "+tl(sonKalan);$("printArea").classList.add("print-active");window.print();setTimeout(()=>$("printArea").classList.remove("print-active"),500)}
-function bind(){$("bayiBtn").onclick=()=>$("passwordBox").classList.remove("hidden");$("musteriBtn").onclick=()=>$("musteriSifreBox").classList.remove("hidden");$("passCancelBtn").onclick=()=>$("passwordBox").classList.add("hidden");$("musteriPassCancelBtn").onclick=()=>$("musteriSifreBox").classList.add("hidden");$("musteriPassOkBtn").onclick=()=>{if($("musteriPass").value==="1234"){$("musteriPass").value="";$("musteriSifreBox").classList.add("hidden");showQuote("musteri")}else alert("Şifre hatalı")};$("musteriPass").addEventListener("keydown",e=>{if(e.key==="Enter")$("musteriPassOkBtn").click()});$("passOkBtn").onclick=()=>{if($("bayiPass").value==="4321"){bayiYetkili=true;$("bayiPass").value="";$("passwordBox").classList.add("hidden");showQuote("bayi")}else alert("Şifre hatalı")};$("bayiPass").addEventListener("keydown",e=>{if(e.key==="Enter")$("passOkBtn").click()});$("savedCloseBtn").onclick=hideSaved;$("homeBtn").onclick=showHome;$("quoteSavedBtn").onclick=showSavedFromQuote;$("cutCloseBtn").onclick=()=>{$("cutBox").classList.add("hidden");$("savedBox").classList.remove("hidden")};$("cutPrintBtn").onclick=printCut;$("calcBtn").onclick=calc;$("clearBtn").onclick=clearQuote;$("saveBtn").onclick=saveQuote;$("whatsappBtn").onclick=sendWhatsApp;$("pdfBtn").onclick=printQuote;$("addRowBtn").onclick=()=>addRow();["mod","fiyatGorunum","onOdeme"].forEach(id=>$(id).addEventListener("input",calc));$("tarih").value=bugun();for(let i=0;i<10;i++)addRow();calc()}
+function bind(){$("bayiBtn").onclick=()=>$("passwordBox").classList.remove("hidden");$("musteriBtn").onclick=()=>$("musteriSifreBox").classList.remove("hidden");$("homeSavedBtn").onclick=showSaved;$("passCancelBtn").onclick=()=>$("passwordBox").classList.add("hidden");$("musteriPassCancelBtn").onclick=()=>$("musteriSifreBox").classList.add("hidden");$("musteriPassOkBtn").onclick=()=>{if($("musteriPass").value==="1234"){$("musteriPass").value="";$("musteriSifreBox").classList.add("hidden");showQuote("musteri")}else alert("Şifre hatalı")};$("musteriPass").addEventListener("keydown",e=>{if(e.key==="Enter")$("musteriPassOkBtn").click()});$("passOkBtn").onclick=()=>{if($("bayiPass").value==="4321"){bayiYetkili=true;$("bayiPass").value="";$("passwordBox").classList.add("hidden");showQuote("bayi")}else alert("Şifre hatalı")};$("bayiPass").addEventListener("keydown",e=>{if(e.key==="Enter")$("passOkBtn").click()});$("savedCloseBtn").onclick=hideSaved;$("homeBtn").onclick=showHome;$("cutCloseBtn").onclick=()=>{$("cutBox").classList.add("hidden");$("savedBox").classList.remove("hidden")};$("cutPrintBtn").onclick=printCut;$("calcBtn").onclick=calc;$("clearBtn").onclick=clearQuote;$("saveBtn").onclick=saveQuote;$("whatsappBtn").onclick=sendWhatsApp;$("pdfBtn").onclick=printQuote;$("addRowBtn").onclick=()=>addRow();["mod","fiyatGorunum","onOdeme"].forEach(id=>$(id).addEventListener("input",calc));$("tarih").value=bugun();for(let i=0;i<10;i++)addRow();calc()}
 document.addEventListener("DOMContentLoaded",bind);

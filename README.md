@@ -1,3 +1,3 @@
-# OLKUN SİNEKLİK Stabil V6
+# OLKUN SİNEKLİK Stabil V7
 
-Bayi girişi 4321, müşteri girişi 1234, Son Teklifler 0000 şifrelidir. Mevcut düzen korunmuştur.
+Son Teklifler ana ekrana alındı ve 0000 şifresiyle ortak yönetim ekranı yapıldı. Bayi ve müşteri teklifleri aynı ekranda ayrı başlıklarla görünür.
