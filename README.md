@@ -1,3 +1,3 @@
-# OLKUN SİNEKLİK Stabil V5
+# OLKUN SİNEKLİK Stabil V6
 
-Bayi ve müşteri girişleri ayrıldı. Müşteri ön ödeme eklendi. Her giriş sadece kendi tekliflerini görür. Bayi teklifini açarken şifre kontrolü vardır.
+Bayi girişi 4321, müşteri girişi 1234, Son Teklifler 0000 şifrelidir. Mevcut düzen korunmuştur.
