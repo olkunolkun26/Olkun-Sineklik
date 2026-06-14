@@ -1,3 +1,3 @@
-# OLKUN SİNEKLİK Stabil V7
+# OLKUN SİNEKLİK Stabil V8
 
-Toplam adet/fiyat barı ana ekrandan tamamen kaldırıldı; sadece teklif ekranı içinde görünür.
+Mod alanı kilitlendi, toplam fiyat barı teklif ekranında altta sabit hale getirildi, ölçü satırları otomatik çoğalacak şekilde düzenlendi.
