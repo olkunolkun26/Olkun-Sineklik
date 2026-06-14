@@ -1,3 +1,3 @@
-# OLKUN SİNEKLİK Stabil V8
+# OLKUN SİNEKLİK Stabil V9
 
-Mod alanı kilitlendi, toplam fiyat barı teklif ekranında altta sabit hale getirildi, ölçü satırları otomatik çoğalacak şekilde düzenlendi.
+Kesim ölçüsü ekranına görsel olarak paylaşma butonu eklendi. iPhone'da paylaş menüsünden WhatsApp ile gönderilebilir.

@@ -2,3 +2,7 @@
 .top-actions:has(> button:only-child){grid-template-columns:1fr}
 
 
+
+.cut-action-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.cut-action-row .btn-main{max-width:none;margin-top:0}
+@media(max-width:390px){.cut-action-row{grid-template-columns:1fr}}
