@@ -1,3 +1,3 @@
 # OLKUN SİNEKLİK
 
-Bayi girişi şifreli (4321), müşteri girişi şifresiz ve son kullanıcı fiyatlı olarak ayrıldı.
+Bayi ve müşteri teklifleri ayrı kaydedilir. Kayıtlı tekliflerde ara ödeme ekleme, kalan hesaplama ve kesim ölçüsü bulunur.

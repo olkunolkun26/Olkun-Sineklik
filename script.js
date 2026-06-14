@@ -207,7 +207,6 @@ function setSaved(list) {
 }
 
 function teklifiKaydet() {
-  if (girisTipi === "musteri") { alert("Kayıt işlemi bayi girişinde kullanılabilir."); return; }
   hesapla();
 
   if (sonKalemler.length === 0) {
@@ -226,6 +225,8 @@ function teklifiKaydet() {
     total: sonToplam,
     deposit: sonOnOdeme,
     remaining: sonKalan,
+    totalPaid: sonOnOdeme,
+    type: girisTipi,
     adet: sonAdet,
     rows: getRowsData()
   };
@@ -246,23 +247,68 @@ function renderSavedList() {
     return;
   }
 
-  box.innerHTML = list.map((q) => `
-    <div class="saved-item">
-      <div class="saved-title">${q.customer}</div>
-      <div class="saved-meta">${q.date} • ${q.adet} adet</div>
-      <div class="saved-money">
-        <div><span>Toplam</span><strong>${tl(q.total || 0)}</strong></div>
-        <div><span>Ön Ödeme</span><strong>${tl(q.deposit || 0)}</strong></div>
-        <div><span>Kalan</span><strong>${tl(q.remaining ?? Math.max((q.total || 0) - (q.deposit || 0), 0))}</strong></div>
-      </div>
-      <div class="saved-actions">
-        <button class="load-btn" type="button" onclick="teklifiYukle(${q.id})">Aç</button>
-        <button class="cut-btn" type="button" onclick="kesimOlcusuGoster(${q.id})">Kesim Ölçüsü</button>
-        <button class="paid-btn" type="button" onclick="odendi(${q.id})">Ödendi</button>
-        <button class="delete-btn" type="button" onclick="teklifiSil(${q.id})">Sil</button>
-      </div>
-    </div>
-  `).join("");
+  const bayiList = list.filter((q) => (q.type || "bayi") === "bayi");
+  const musteriList = list.filter((q) => q.type === "musteri");
+
+  function kartlar(items, baslik) {
+    if (items.length === 0) return "";
+
+    return '<div class="saved-section-title">' + baslik + '</div>' + items.map((q) => {
+      const toplam = q.total || 0;
+      const odenen = q.totalPaid ?? q.deposit ?? 0;
+      const kalan = Math.max(toplam - odenen, 0);
+      const tip = (q.type || "bayi") === "musteri" ? "Müşteri Teklifi" : "Bayi Teklifi";
+
+      return `
+        <div class="saved-item">
+          <div class="saved-title">${q.customer}</div>
+          <div class="saved-meta">${q.date} • ${q.adet} adet</div>
+          <div class="saved-type">${tip}</div>
+          <div class="saved-money">
+            <div><span>Toplam</span><strong>${tl(toplam)}</strong></div>
+            <div><span>Ödenen</span><strong>${tl(odenen)}</strong></div>
+            <div><span>Kalan</span><strong>${tl(kalan)}</strong></div>
+          </div>
+          <div class="payment-add">
+            <input id="ara_${q.id}" type="number" placeholder="Ara ödeme">
+            <button type="button" onclick="araOdemeEkle(${q.id})">Ekle</button>
+          </div>
+          <div class="saved-actions">
+            <button class="load-btn" type="button" onclick="teklifiYukle(${q.id})">Aç</button>
+            <button class="cut-btn" type="button" onclick="kesimOlcusuGoster(${q.id})">Kesim Ölçüsü</button>
+            <button class="paid-btn" type="button" onclick="odendi(${q.id})">Ödendi</button>
+            <button class="delete-btn" type="button" onclick="teklifiSil(${q.id})">Sil</button>
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  box.innerHTML = kartlar(bayiList, "Bayi Teklifleri") + kartlar(musteriList, "Müşteri Teklifleri");
+}
+
+
+function araOdemeEkle(id) {
+  const input = document.getElementById("ara_" + id);
+  if (!input) return;
+
+  const tutar = sayi(input.value);
+  if (tutar <= 0) {
+    alert("Ara ödeme tutarı giriniz");
+    return;
+  }
+
+  const list = getSaved();
+  const q = list.find((x) => x.id === id);
+  if (!q) return;
+
+  const oncekiOdenen = q.totalPaid ?? q.deposit ?? 0;
+  q.totalPaid = Math.round(oncekiOdenen + tutar);
+  q.deposit = q.totalPaid;
+  q.remaining = Math.max((q.total || 0) - q.totalPaid, 0);
+
+  setSaved(list);
+  renderSavedList();
 }
 
 function teklifiSil(id) {
@@ -280,16 +326,27 @@ function teklifiYukle(id) {
   const q = getSaved().find((x) => x.id === id);
   if (!q) return;
 
+  girisTipi = q.type || "bayi";
+  document.body.classList.toggle("customer-mode", girisTipi === "musteri");
+
+  const onOdemeEl = document.getElementById("onOdeme");
+  if (onOdemeEl && onOdemeEl.parentElement) {
+    onOdemeEl.parentElement.style.display = girisTipi === "musteri" ? "none" : "block";
+  }
+
   document.getElementById("welcomeScreen").classList.add("hidden");
   document.getElementById("quoteScreen").classList.remove("hidden");
   document.getElementById("savedPanel").classList.add("hidden");
+
+  const kesimPanel = document.getElementById("kesimPanel");
+  if (kesimPanel) kesimPanel.classList.add("hidden");
 
   document.getElementById("tarih").value = q.date || bugun();
   document.getElementById("musteri").value = q.customer || "";
   document.getElementById("telefon").value = q.phone || "";
   document.getElementById("adres").value = q.address || "";
-  document.getElementById("onOdeme").value = q.deposit || "";
-  document.getElementById("mod").value = q.mod || "bayi";
+  document.getElementById("onOdeme").value = q.totalPaid ?? q.deposit ?? "";
+  document.getElementById("mod").value = q.mod || (girisTipi === "musteri" ? "son" : "bayi");
   document.getElementById("fiyatGorunum").value = q.fiyatGorunum || "satir";
 
   document.getElementById("rows").innerHTML = "";
@@ -301,90 +358,6 @@ function teklifiYukle(id) {
   }
 
   hesapla();
-}
-
-
-function formatCm(value) {
-  const n = Math.round(Number(value) * 10) / 10;
-  return Number.isInteger(n) ? String(n) : String(n).replace(".", ",");
-}
-
-function kesimHesapla(en, boy) {
-  return {
-    kesimEn: en - 5.5,
-    kesimBoy: boy - 3.5,
-    kanat: boy - 9.2,
-    tulBoyu: boy - 6,
-    tepe: Math.round(en * 0.53),
-    ip: ((en + boy) * 2) + 30
-  };
-}
-
-function kesimOlcusuGoster(id) {
-  const q = getSaved().find((x) => x.id === id);
-  if (!q) return;
-
-  document.getElementById("savedPanel").classList.add("hidden");
-  document.getElementById("kesimPanel").classList.remove("hidden");
-
-  let html = '<div class="kesim-title">' + (q.customer || "İsimsiz müşteri") + '</div>';
-  html += '<div class="kesim-sub">' + (q.phone || "-") + '<br>' + (q.address || "-") + '</div>';
-
-  (q.rows || []).forEach((r, index) => {
-    const en = sayi(r.en);
-    const boy = sayi(r.boy);
-    const adet = sayi(r.adet) || 1;
-    const k = kesimHesapla(en, boy);
-    const renkText = r.renk === "renkli" ? "Renkli" : "Beyaz";
-    const tipText = r.duble ? "Duble" : "Standart";
-
-    html += '<div class="kesim-card">';
-    html += '<h3>' + (index + 1) + '. ' + en + ' × ' + boy + ' cm • ' + adet + ' Adet • ' + tipText + ' • ' + renkText + '</h3>';
-    html += '<div class="kesim-grid">';
-    html += '<div><span>Kesim En</span><strong>' + formatCm(k.kesimEn) + ' cm</strong></div>';
-    html += '<div><span>Kesim Boy</span><strong>' + formatCm(k.kesimBoy) + ' cm</strong></div>';
-    html += '<div><span>Kanat</span><strong>' + formatCm(k.kanat) + ' cm</strong></div>';
-    html += '<div><span>Tül Boyu</span><strong>' + formatCm(k.tulBoyu) + ' cm</strong></div>';
-    html += '<div><span>Tül Tepe</span><strong>' + k.tepe + '</strong></div>';
-    html += '<div><span>İp Uzunluğu</span><strong>' + formatCm(k.ip) + ' cm</strong></div>';
-    html += '</div></div>';
-  });
-
-  document.getElementById("kesimIcerik").innerHTML = html;
-  window.__aktifKesimTeklif = q;
-}
-
-function kesimYazdir() {
-  const q = window.__aktifKesimTeklif;
-  if (!q) return;
-
-  document.getElementById("kpMusteri").innerText = q.customer || "-";
-  document.getElementById("kpTelefon").innerText = q.phone || "-";
-  document.getElementById("kpAdres").innerText = q.address || "-";
-
-  let html = "";
-
-  (q.rows || []).forEach((r, index) => {
-    const en = sayi(r.en);
-    const boy = sayi(r.boy);
-    const adet = sayi(r.adet) || 1;
-    const k = kesimHesapla(en, boy);
-    const renkText = r.renk === "renkli" ? "Renkli" : "Beyaz";
-    const tipText = r.duble ? "Duble" : "Standart";
-
-    html += '<div class="kesim-print-item">';
-    html += '<strong>' + (index + 1) + ') Bitmiş Ölçü: ' + en + ' × ' + boy + ' cm - ' + adet + ' Adet - ' + tipText + ' - ' + renkText + '</strong><br>';
-    html += 'Kesim En: ' + formatCm(k.kesimEn) + ' cm<br>';
-    html += 'Kesim Boy: ' + formatCm(k.kesimBoy) + ' cm<br>';
-    html += 'Kanat: ' + formatCm(k.kanat) + ' cm<br>';
-    html += 'Tül Boyu: ' + formatCm(k.tulBoyu) + ' cm<br>';
-    html += 'Tül Tepe Sayısı: ' + k.tepe + '<br>';
-    html += 'İp Uzunluğu: ' + formatCm(k.ip) + ' cm';
-    html += '</div>';
-  });
-
-  document.getElementById("kpListe").innerHTML = html;
-  window.print();
 }
 
 function whatsappGonder() {

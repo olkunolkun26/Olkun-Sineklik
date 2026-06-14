@@ -18,5 +18,11 @@
 .password-panel h2{margin:0 0 6px;color:var(--anthracite);font-size:20px}
 .password-panel p{margin:0 0 12px;color:#666;font-size:13px}
 .password-panel input{height:50px;text-align:center;font-size:20px;margin-bottom:10px}
-.customer-mode .saved-only,.customer-mode #quoteSavedBtn,.customer-mode #saveBtn,.customer-mode .payment-panel{display:none!important}
+.customer-mode .saved-only,.customer-mode #quoteSavedBtn,.customer-mode .payment-panel{display:none!important}
 .customer-mode #mod{pointer-events:none;background:#f3f3f3}
+
+.saved-section-title{font-size:15px;font-weight:900;color:#2C3136;margin:16px 0 6px;padding:8px 10px;background:#f0f2f4;border-radius:14px}
+.payment-add{display:grid;grid-template-columns:1fr .7fr;gap:8px;margin-top:10px}
+.payment-add input{height:42px;border:1.5px solid #ddd;border-radius:14px;padding:0 8px;font-size:15px}
+.payment-add button{height:42px;border:0;border-radius:14px;background:#0d6efd;color:white;font-weight:900}
+.saved-type{display:inline-block;margin-top:6px;font-size:11px;font-weight:900;padding:4px 8px;border-radius:999px;background:#2C3136;color:#D4AF37}
