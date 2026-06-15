@@ -1,3 +1,3 @@
-# OLKUN SİNEKLİK Stabil V9
+# OLKUN SİNEKLİK Stabil V10
 
-Kesim ölçüsü ekranına görsel olarak paylaşma butonu eklendi. iPhone'da paylaş menüsünden WhatsApp ile gönderilebilir.
+Duble kesim ölçüsü güncellendi: kanat 2 adet, tül boyu 2 adet, tül tepe sayısı ikiye bölünerek 2 tül olarak gösterilir. Diğer sistem korunmuştur.

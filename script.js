@@ -104,12 +104,24 @@ function addPayment(id){const input=$("ara_"+id);const tutar=sayi(input&&input.v
 function deleteQuote(id){setSaved(getSaved().filter(q=>q.id!==id));renderSavedList()}
 function markPaid(id){if(confirm("Bu teklif ödendi olarak kapatılsın mı?"))deleteQuote(id)}
 function loadQuote(id){const q=getSaved().find(x=>x.id===id);if(!q)return;const tip=q.type||"bayi";if(tip==="bayi"&&!bayiYetkili){const sifre=prompt("Bayi teklifini açmak için şifre girin:");if(sifre!=="4321"){alert("Şifre hatalı");return}bayiYetkili=true}girisTipi=tip;$("homeScreen").classList.add("hidden");$("quoteScreen").classList.remove("hidden");$("savedBox").classList.add("hidden");$("cutBox").classList.add("hidden");$("screenTitle").innerText=girisTipi==="bayi"?"Bayi Teklif Ekranı":"Müşteri Teklif Ekranı";$("mod").value=q.mod||(girisTipi==="musteri"?"son":"bayi");$("mod").disabled=true;$("onOdemeWrap").style.display="block";$("tarih").value=q.date||bugun();$("musteri").value=q.customer||"";$("telefon").value=q.phone||"";$("adres").value=q.address||"";$("onOdeme").value=q.totalPaid??0;$("fiyatGorunum").value=q.fiyatGorunum||"satir";$("rows").innerHTML="";(q.rows||[]).forEach(r=>addRow(r));otomatikSatirKontrol();calc()}
-function cutCalc(en,boy){return{kesimEn:en-5.5,kesimBoy:boy-3.5,kanat:boy-9.2,tulBoyu:boy-6,tepe:Math.round(en*0.53),ip:((en+boy)*2)+30}}
-function showCut(id){const q=getSaved().find(x=>x.id===id);if(!q)return;aktifKesim=q;$("savedBox").classList.add("hidden");$("cutBox").classList.remove("hidden");let html=`<div class="saved-title">${q.customer}</div><div class="saved-meta">${q.phone||"-"}<br>${q.address||"-"}</div>`;(q.rows||[]).forEach((r,i)=>{const en=sayi(r.en),boy=sayi(r.boy),adet=sayi(r.adet)||1,k=cutCalc(en,boy);const renk=r.renk==="renkli"?"Renkli":"Beyaz",tip=r.duble?"Duble":"Standart";html+=`<div class="cut-card"><b>${i+1}. ${en} × ${boy} cm • ${adet} Adet • ${tip} • ${renk}</b><div class="cut-grid"><div><span>Kesim En</span><strong>${cm(k.kesimEn)} cm</strong></div><div><span>Kesim Boy</span><strong>${cm(k.kesimBoy)} cm</strong></div><div><span>Kanat</span><strong>${cm(k.kanat)} cm</strong></div><div><span>Tül Boyu</span><strong>${cm(k.tulBoyu)} cm</strong></div><div><span>Tül Tepe</span><strong>${k.tepe}</strong></div><div><span>İp Uzunluğu</span><strong>${cm(k.ip)} cm</strong></div></div></div>`});$("cutContent").innerHTML=html}
+function cutCalc(en,boy,duble=false){
+  const toplamTepe=Math.round(en*0.53);
+  return{
+    kesimEn:en-5.5,
+    kesimBoy:boy-3.5,
+    kanat:boy-9.2,
+    tulBoyu:boy-6,
+    tepe:duble?Math.round(toplamTepe/2):toplamTepe,
+    kanatAdet:duble?2:1,
+    tulAdet:duble?2:1,
+    ip:((en+boy)*2)+30
+  };
+}
+function showCut(id){const q=getSaved().find(x=>x.id===id);if(!q)return;aktifKesim=q;$("savedBox").classList.add("hidden");$("cutBox").classList.remove("hidden");let html=`<div class="saved-title">${q.customer}</div><div class="saved-meta">${q.phone||"-"}<br>${q.address||"-"}</div>`;(q.rows||[]).forEach((r,i)=>{const en=sayi(r.en),boy=sayi(r.boy),adet=sayi(r.adet)||1,k=cutCalc(en,boy,r.duble);const renk=r.renk==="renkli"?"Renkli":"Beyaz",tip=r.duble?"Duble":"Standart";html+=`<div class="cut-card"><b>${i+1}. ${en} × ${boy} cm • ${adet} Adet • ${tip} • ${renk}</b><div class="cut-grid"><div><span>Kesim En</span><strong>${cm(k.kesimEn)} cm</strong></div><div><span>Kesim Boy</span><strong>${cm(k.kesimBoy)} cm</strong></div><div><span>Kanat</span><strong>${cm(k.kanat)} cm${k.kanatAdet>1?" × "+k.kanatAdet:""}</strong></div><div><span>Tül Boyu</span><strong>${cm(k.tulBoyu)} cm${k.tulAdet>1?" × "+k.tulAdet:""}</strong></div><div><span>Tül Tepe</span><strong>${k.tepe}${k.tulAdet>1?" × "+k.tulAdet+" tül":""}</strong></div><div><span>İp Uzunluğu</span><strong>${cm(k.ip)} cm</strong></div></div></div>`});$("cutContent").innerHTML=html}
 
 function kesimRowsFromQuote(q){
   return (q.rows||[]).map((r,i)=>{
-    const en=sayi(r.en), boy=sayi(r.boy), adet=sayi(r.adet)||1, k=cutCalc(en,boy);
+    const en=sayi(r.en), boy=sayi(r.boy), adet=sayi(r.adet)||1, k=cutCalc(en,boy,r.duble);
     const renk=r.renk==="renkli"?"Renkli":"Beyaz";
     const tip=r.duble?"Duble":"Standart";
     return {
@@ -119,9 +131,9 @@ function kesimRowsFromQuote(q){
       tip:tip+" "+renk,
       kesimEn:cm(k.kesimEn),
       kesimBoy:cm(k.kesimBoy),
-      kanat:cm(k.kanat),
-      tulBoyu:cm(k.tulBoyu),
-      tepe:String(k.tepe),
+      kanat:cm(k.kanat)+(k.kanatAdet>1?" x"+k.kanatAdet:""),
+      tulBoyu:cm(k.tulBoyu)+(k.tulAdet>1?" x"+k.tulAdet:""),
+      tepe:String(k.tepe)+(k.tulAdet>1?" x"+k.tulAdet:""),
       ip:cm(k.ip)
     };
   });
@@ -266,7 +278,7 @@ async function kesimGorselPaylas(){
   }
 }
 
-function printCut(){if(!aktifKesim)return;$("cpMusteri").innerText=aktifKesim.customer||"-";$("cpTelefon").innerText=aktifKesim.phone||"-";$("cpAdres").innerText=aktifKesim.address||"-";let html="";(aktifKesim.rows||[]).forEach((r,i)=>{const en=sayi(r.en),boy=sayi(r.boy),adet=sayi(r.adet)||1,k=cutCalc(en,boy);html+=`<div class="print-item"><b>${i+1}) Bitmiş: ${en} × ${boy} cm - ${adet} Adet</b><br>Kesim En: ${cm(k.kesimEn)} cm<br>Kesim Boy: ${cm(k.kesimBoy)} cm<br>Kanat: ${cm(k.kanat)} cm<br>Tül Boyu: ${cm(k.tulBoyu)} cm<br>Tül Tepe: ${k.tepe}<br>İp Uzunluğu: ${cm(k.ip)} cm</div>`});$("cpRows").innerHTML=html;$("cutPrintArea").classList.add("print-active");window.print();setTimeout(()=>$("cutPrintArea").classList.remove("print-active"),500)}
+function printCut(){if(!aktifKesim)return;$("cpMusteri").innerText=aktifKesim.customer||"-";$("cpTelefon").innerText=aktifKesim.phone||"-";$("cpAdres").innerText=aktifKesim.address||"-";let html="";(aktifKesim.rows||[]).forEach((r,i)=>{const en=sayi(r.en),boy=sayi(r.boy),adet=sayi(r.adet)||1,k=cutCalc(en,boy,r.duble);html+=`<div class="print-item"><b>${i+1}) Bitmiş: ${en} × ${boy} cm - ${adet} Adet</b><br>Kesim En: ${cm(k.kesimEn)} cm<br>Kesim Boy: ${cm(k.kesimBoy)} cm<br>Kanat: ${cm(k.kanat)} cm${k.kanatAdet>1?" × "+k.kanatAdet:""}<br>Tül Boyu: ${cm(k.tulBoyu)} cm${k.tulAdet>1?" × "+k.tulAdet:""}<br>Tül Tepe: ${k.tepe}${k.tulAdet>1?" × "+k.tulAdet+" tül":""}<br>İp Uzunluğu: ${cm(k.ip)} cm</div>`});$("cpRows").innerHTML=html;$("cutPrintArea").classList.add("print-active");window.print();setTimeout(()=>$("cutPrintArea").classList.remove("print-active"),500)}
 function sendWhatsApp(){calc();if(!sonKalemler.length){alert("Ölçü giriniz");return}const lines=[];lines.push("📋 *OLKUN SİNEKLİK TEKLİFİ*");lines.push("📅 "+$("tarih").value);lines.push("");lines.push("👤 *Müşteri:* "+($("musteri").value||"-"));lines.push("📞 *Telefon:* "+($("telefon").value||"-"));lines.push("📍 *Adres:* "+($("adres").value||"-"));lines.push("");lines.push("━━━━━━━━━━━━━━━━━━━━");sonKalemler.forEach(k=>{let urun=k.tip==="Duble"?"Duble "+k.renk:k.renk;lines.push("");lines.push("*"+k.no+". Sineklik*");lines.push("Ölçü : "+k.en+" × "+k.boy+" cm");lines.push("Ürün : "+urun);lines.push("Adet : "+k.adet)});lines.push("");lines.push("━━━━━━━━━━━━━━━━━━━━");lines.push("📦 *Toplam Adet:* "+sonAdet);lines.push("");lines.push("*OLKUN SİNEKLİK*");window.open("https://wa.me/?text="+encodeURIComponent(lines.join("\n")),"_blank")}
 function printQuote(){calc();if(!sonKalemler.length){alert("Ölçü giriniz");return}$("pTarih").innerText=$("tarih").value;$("pMusteri").innerText=$("musteri").value||"-";$("pTelefon").innerText=$("telefon").value||"-";$("pAdres").innerText=$("adres").value||"-";$("pRows").innerHTML=sonKalemler.map(k=>`<div class="print-item">${k.no}) ${k.en} × ${k.boy} cm - ${k.adet} Adet - ${k.tip} - ${k.renk}</div>`).join("");$("pTotal").innerText="Toplam: "+tl(sonToplam);$("pPayment").innerText="Ödenen: "+tl(sonOdenen)+" / Kalan: "+tl(sonKalan);$("printArea").classList.add("print-active");window.print();setTimeout(()=>$("printArea").classList.remove("print-active"),500)}
 function bind(){$("bayiBtn").onclick=()=>$("passwordBox").classList.remove("hidden");$("musteriBtn").onclick=()=>$("musteriSifreBox").classList.remove("hidden");$("homeSavedBtn").onclick=showSaved;$("passCancelBtn").onclick=()=>$("passwordBox").classList.add("hidden");$("musteriPassCancelBtn").onclick=()=>$("musteriSifreBox").classList.add("hidden");$("musteriPassOkBtn").onclick=()=>{if($("musteriPass").value==="1234"){$("musteriPass").value="";$("musteriSifreBox").classList.add("hidden");showQuote("musteri")}else alert("Şifre hatalı")};$("musteriPass").addEventListener("keydown",e=>{if(e.key==="Enter")$("musteriPassOkBtn").click()});$("passOkBtn").onclick=()=>{if($("bayiPass").value==="4321"){bayiYetkili=true;$("bayiPass").value="";$("passwordBox").classList.add("hidden");showQuote("bayi")}else alert("Şifre hatalı")};$("bayiPass").addEventListener("keydown",e=>{if(e.key==="Enter")$("passOkBtn").click()});$("savedCloseBtn").onclick=hideSaved;$("homeBtn").onclick=showHome;$("cutCloseBtn").onclick=()=>{$("cutBox").classList.add("hidden");$("savedBox").classList.remove("hidden")};$("cutPrintBtn").onclick=printCut;$("cutShareBtn").onclick=kesimGorselPaylas;$("calcBtn").onclick=calc;$("clearBtn").onclick=clearQuote;$("saveBtn").onclick=saveQuote;$("whatsappBtn").onclick=sendWhatsApp;$("pdfBtn").onclick=printQuote;$("addRowBtn").onclick=()=>addRow();["mod","fiyatGorunum","onOdeme"].forEach(id=>$(id).addEventListener("input",calc));$("tarih").value=bugun();addRow();calc()}
